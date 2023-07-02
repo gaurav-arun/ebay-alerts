@@ -1,0 +1,41 @@
+<!--{% extends "mails/base.html" %}-->
+
+{% block subject %} Welcome to Airbase! {% endblock subject %}
+
+{% block title %}
+Welcome to Airbase!
+{% endblock title %}
+
+{% block message %}
+Hi,
+<br>
+<br>
+Welcome to the Airbase community! Our #1 spend management platform makes purchasing a better experience for everyone in your company.
+We can’t wait for you to get started using {% if is_prefunded %}<span style="font-weight: 700;">Airbase pre-funded cards with generous cashback</span>{% else %}<span style="font-weight: 700;">Airbase charge cards with generous cashback</span>{% endif %}
+(see our Help Center for more <a href={{ card_programs_link }} target="_blank" rel="noopener noreferrer">information on card programs</a>). We hope you also take advantage of other Airbase features like bill payments and reimbursements.
+<br>
+<br>
+If you have a few minutes, take a look at this 3-minute overview video:
+<br>
+<br>
+<a href="{{ onboarding_demo_video_link }}" target="_blank" rel="noopener noreferrer">
+    <img width="400" style="display:block;margin-left:auto;margin-right:auto;" alt="Airbase Product Demo" src="{{ dashboard_url }}/assets/essentials/product-demo-overlay.jpeg">
+</a>
+<br>
+<br>
+Please log in to <a href="{{cta_url}}" target="_blank" rel="noopener noreferrer">Airbase</a> with this email address. You can log in with Google or request a one-time code from the login screen.
+<br>
+<br>
+We’ll guide you through your onboarding and account setup. To get more details about your onboarding, you can check our <a href={{onboarding_guide_link}} target="_blank" rel="noopener noreferrer">onboarding and getting started guides.</a>
+You can access the guides with the email address you use for your Airbase account.
+<br>
+<br>
+We recommend booking <a href={{15_minute_booking_link}} target="_blank" rel="noopener noreferrer">15 minutes</a> or <a href={{30_minute_booking_link}} target="_blank" rel="noopener noreferrer">30 minutes </a> with our onboarding team to get started.
+If you have any specific questions, you can email us at <a href="mailto:{{ support_email }}">{{ support_email}}</a>.
+<br>
+<br>
+Happy onboarding!
+<br>
+The Airbase Team
+{% endblock message %}
+{% block action_button_text %}Get Started{% endblock action_button_text %}

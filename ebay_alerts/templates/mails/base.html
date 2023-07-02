@@ -1,0 +1,323 @@
+{% comment %}
+This is the base template for all emails.
+
+These are the mandatory blocks to be extended in the templates that extend this base template:
+ - title - this is the title text of the email telling the user what this email is about.
+ - message - The main message being communicated in the email.
+
+The other two blocks are optional:
+ - details - Use this block for additional information to be communicated.
+ - action_button - Used if the email has a CTA. Set the action_button_text block if there is a CTA.
+
+Set both blocks to empty strings if they are not required.
+{% endcomment %}
+
+{% if render_subject %}{% autoescape off %}{% block subject_prefix %}{% endblock subject_prefix %} {% block subject %}{% endblock subject %}{% endautoescape %}
+{% else %}
+  {% block html %}
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+            <meta name="viewport" content="width=device-width;initial-scale=1.0; user-scalable=1;" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <title>Airbase</title>
+            <META NAME="ROBOTS" CONTENT="NOINDEX,NOFOLLOW" CONTENT="text/html; charset=UTF-8" />
+            <style type="text/css">
+                /* Tablets & mobiles */
+                @media only screen and (max-width: 600px)  {
+                    table[class="body-wrapper"] {
+                        width: 100% !important;
+                    }
+                    a[class="btn"] {
+                        display: block !important;
+                    }
+                }
+                /* Desktop */
+                @media only screen and (min-width: 601px) {
+                    table[class="body-wrapper"] {
+                        width: 600px !important;
+                    }
+                }
+            </style>
+        <style type="text/css">
+            /*********************************/
+              /* Reset CSS styles starts */
+            /*********************************/
+            body{
+                -webkit-font-smoothing:antialiased;
+                -webkit-text-size-adjust:100%;
+                -ms-text-size-adjust:100%;
+                width: 100%;
+                height: 100%;
+                margin:0;
+                padding:0;
+                background-color: #f9fafb;
+                color: #222;
+                font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+                font-weight:500;
+                font-size:14px;
+                letter-spacing: -.024em;
+                box-sizing: border-box;
+                outline: none;
+            }
+            /* outlook.com / hotmail */
+            .ExternalClass {
+                width:100%;
+            }
+            .ExternalClass,
+            .ExternalClass p,
+            .ExternalClass span,
+            .ExternalClass font,
+            .ExternalClass td,
+            .ExternalClass div {
+                line-height: 100%;
+            }
+            /* outlook 2007 / 2010 / 2013 */
+            table {
+                mso-table-lspace:0pt;
+                mso-table-rspace:0pt;
+            }
+            img {
+                -ms-interpolation-mode:bicubic;
+            }
+            /* OSX / iOS / windows mobile */
+            body {
+                -webkit-text-size-adjust:100%;
+                -ms-text-size-adjust:100%;
+            }
+            img { border:0px; }
+            table {border-spacing: 0px;}
+            body,div,dl,dt,dd,ul,li,h1,h2,h3,h4,h5,h6,pre,form,p,blockquote,th,td { margin:0px;padding:0px; }
+            a:link { color: #FF6348;text-decoration:none; }
+            a:visited { color: #FF6348;text-decoration:none; }
+            a:hover { color: #FF6348;text-decoration:underline; }
+            strong a {
+                text-decoration:none !important;
+                color: #222 !important;
+            }
+            span a {
+                text-decoration:none !important;
+                color: inherit !important;
+            }
+            strong a:hover, span a:hover {
+                text-decoration: none !important;
+            }
+
+            /*********************************/
+              /* Email related styles */
+            /*********************************/
+            .body-wrapper { margin: 0px auto; }
+            .btn { background-color: #26c281; }
+
+            .message-text {
+                padding: 0;
+                margin: 0;
+                line-height: 22px;
+                font-size: 14px;
+                font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+            }
+
+            .card-wrapper {
+                background: #FFFFFF;
+                border: 1px solid rgba(34, 34, 34, 0.05);
+                box-sizing: border-box;
+                box-shadow: 0px 2px 10px rgba(34, 34, 34, 0.05);
+                border-radius: 8px;
+            }
+
+            .card-title {
+                background: #F4F6F8;
+                border: 1px solid rgba(34, 34, 34, 0.05);
+                box-sizing: border-box;
+                border-radius: 8px 8px 0px 0px;
+                font-weight: bold; font-size: 14px;
+                padding: 12px 16px 12px;
+                font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+            }
+
+            .card-body { padding: 16px; }
+
+            .text-grey {
+                color: rgba(34, 34, 34, 0.5);
+                margin: 0;
+                font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+            }
+        </style>
+        {% block head_css %}{% endblock head_css %}
+        </head>
+        <body style="-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;width: 100%;height: 100%;margin:0;padding:0 24px;background-color: #f9fafb;color: #222;font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;font-weight:500;font-size:14px;letter-spacing: -.024em;box-sizing: border-box;outline: none;text-align:center;" bgcolor="#f9fafb">
+
+            <!-- ============================================================== -->
+                                <!-- HEADER -->
+            <!-- ============================================================== -->
+            <!-- Wrapper table for outlook 2000 / 2002 / 2003/ 2007 / 2010 / 2013 and Lotus notes 8 & 8.5 -->
+            <!--[if (gte mso 9)|(IE)]>
+                <table width="600" style="width:600px;margin: 0px auto;" class="body-wrapper" cellspacing="0" align="center" cellpadding="0">
+                  <tbody>
+                      <tr>
+                        <td valign="top" align="center" bgcolor="#f9fafb">
+            <![endif]-->
+            <table class="body-wrapper" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin: 0px auto;">
+                <tbody>
+                    <tr>
+                        <td valign="middle" align="left" bgcolor="#f9fafb" style="background-color: #f9fafb;padding:32px 0 16px 10px;margin:0;">
+                                <a style="text-decoration:none;outline:none;color:#FF6348;font-size: 16px;font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;" href="{{ dashboard_url }}" target="_blank">
+                                    <img border="0" height="32"
+                                         src="{{ dashboard_url }}/assets/icons/logo.png"
+                                         alt="Airbase" style="border:none;">
+                                </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- ============================================================== -->
+                                <!-- CONTENT -->
+            <!-- ============================================================== -->
+            <table class="body-wrapper" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin: 0px auto;margin-bottom: 10px;">
+                <tbody>
+                    <tr>
+                        <td valign="top" align="left" bgcolor="#ffffff" style="background-color: #fff;padding: 32px 24px 24px;margin:0;border-radius: 8px;box-shadow: 0 2px 10px #f1f1f1;">
+                            <table width="100%" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                {# Title and primary message (both are mandatory) #}
+                                    <tr>
+                                        <td valign="top" align="left" bgcolor="#ffffff" style="background-color: #fff;padding:0 0 15px 0;margin:0;">
+                                            <p style="padding:0;margin:0 0 20px 0;color:#222;line-height:32px;font-size:24px;font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;">
+                                                {% block title %}{% endblock title %}
+                                            </p>
+
+                                            <p style="padding:0;margin:0;color:#8c8c8c;line-height:22px;font-size:14px;font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;">
+                                                {% block message %}{% endblock message %}
+                                            </p>
+                                        </td>
+                                    </tr>
+
+                                {# Optional details (like a table of information) - set this block to an empty string if it's not required #}
+                                {% block details %}
+                                    <tr>
+                                        <td valign="top" align="left" bgcolor="#ffffff"
+                                            style="background-color: #fff;margin:0;padding: 0 0 15px 0;">
+                                            {% block detail_content %}{% endblock detail_content %}
+                                        </td>
+                                    </tr>
+                                {% endblock details %}
+
+                                {# CTA button (set action_button block to an empty string if there is no CTA) #}
+                                {% block action_button %}
+                                    {% if not is_guest_view_enhancements_enabled %}
+                                        <tr>
+                                            <td valign="top" align="left" bgcolor="#ffffff"
+                                                style="background-color: #fff;margin:0;padding:0 0 15px 0;">
+                                                <a class="btn" align="center"
+                                                   style="
+                                                    text-align:center;
+                                                    font-size: 14px;
+                                                    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+                                                    font-weight: 500;
+                                                    padding: 12px 16px 12px 16px;
+                                                    line-height: 16px;
+                                                    border: 1px solid #25b177;
+                                                    text-decoration: none;
+                                                    color:#fff;
+                                                    display: inline-block;
+                                                    margin:0px 10px 10px 0px;
+                                                    background-color:#26c281;
+                                                    border-radius:8px;
+                                                    float:left;"
+                                                   href="{{ cta_url }}"
+                                                   target="_blank"
+                                                   universal="true"
+                                                   {% if is_sendgrid_tracking_disabled %}clicktracking="off"{% endif %}
+                                                >
+                                                <span style="color:#ffffff;font-size:14px;font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;font-weight: 500;background-color:#26c281;text-decoration: none;text-align:center;">
+                                                    {% block action_button_text %}{% endblock action_button_text %}
+                                                </span>
+                                                </a>
+                                                {%if secondary_cta_url %}
+                                                <a class="btn" align="center"
+                                                   style="
+                                                    text-align:center;
+                                                    font-size: 14px;
+                                                    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+                                                    font-weight: 500;
+                                                    padding: 12px 16px 12px 16px;
+                                                    line-height: 16px;
+                                                    border: 1px solid rgba(34,34,34,0.1);
+                                                    text-decoration: none;
+                                                    color:#fff;
+                                                    display: inline-block;
+                                                    margin:0;
+                                                    float:left;
+                                                    background-color:#FF6348;
+                                                    border-radius:8px;"
+                                                   href="{{ secondary_cta_url }}"
+                                                   target="_blank"
+                                                   universal="true"
+                                                   {% if is_sendgrid_tracking_disabled %}clicktracking="off"{% endif %}
+                                                >
+                                                <span style="color:#ffffff;font-size:14px;font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;font-weight: 500;background-color:#FF6348;text-decoration: none;text-align:center;">
+                                                    {% block secondary_button_text %}{% endblock secondary_button_text %}
+                                                </span>
+                                                </a>
+                                            {% endif %}
+                                            </td>
+
+                                        </tr>
+                                    {% endif %}
+                                {% endblock action_button %}
+
+                                {% block support_info %}
+                                    <tr>
+                                        <td valign="top" align="left" bgcolor="#ffffff" style="background-color: #fff;margin:0;padding:16px 0 0 0;border-top: solid 1px #f1f1f1;">
+                                            <p style="padding:0;margin:0;color:#8c8c8c;font-size:14px;font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;">
+                                                If you need help, please write to <a style="color:#2B90EF;" href="mailto:{{ support_email |default:'support@airbase.io'}}">{{ support_email |default:"support@airbase.io"}}</a>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                {% endblock support_info %}
+                                </tbody>
+                            </table>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+
+            <!-- ============================================================== -->
+                                <!-- FOOTER -->
+            <!-- ============================================================== -->
+            <table class="body-wrapper" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin: 0px auto;">
+                <tbody>
+                    <tr>
+                        <td valign="top" align="center" bgcolor="#f9fafb" style="background-color: #f9fafb;margin:0 auto; padding:14px 0 24px 0;text-align:center;">
+                            <p style="padding: 0;margin: 0 0 10px 0;">
+                                <a href="{{ cta_url }}" target="_blank" title="Airbase" style="text-decoration:none;color:#222;font-size:14px;font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;">
+                                    <span style="text-decoration: none;color:#8c8c8c;font-size:14px;font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;">&copy; {{ year }} Airbase</span>
+                                </a>
+                            </p>
+                            <p style="padding:0;margin:0;font-size: 14px;">
+                                <a href="https://www.facebook.com/AirbaseHQ/" style="color:#FF6348;font-size: 14px;font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;text-decoration: none;">
+                                    <span style="color:#FF6348;font-size: 14px;font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;text-decoration: none;">Facebook</span>
+                                </a>
+                                <span style="color:#cccccc;font-size:18px;line-height:14px;margin:0 5px;padding:0;">&bull;</span>
+                                <a href="https://twitter.com/AirbaseHQ"
+                                   style="color:#FF6348;font-size: 14px;font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;text-decoration: none;">
+                                    <span style="color:#FF6348;font-size: 14px;font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;text-decoration: none;">Twitter</span>
+                                </a>
+                            </p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!--[if (gte mso 9)|(IE)]>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <![endif]-->
+        </body>
+    </html>
+  {% endblock html %}
+{% endif %}
