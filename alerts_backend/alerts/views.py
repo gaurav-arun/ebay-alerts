@@ -40,7 +40,7 @@ class AlertViewSet(ModelViewSet):
         # msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
         # msg.attach_alternative(html_content, "text/html")
         # msg.send()
-        # from ebay_alerts.alerts.utils import send_html_mail
+        # from alerts_backend.alerts.utils import send_html_mail
         logger.info("=========> Sending Email...")
         send_html_mail(
             template_name='mails/test.html',

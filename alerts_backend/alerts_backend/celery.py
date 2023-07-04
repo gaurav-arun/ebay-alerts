@@ -16,9 +16,9 @@ from celery.schedules import crontab
 # pylint: enable=wrong-import-position
 logger = logging.getLogger(__name__)
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ebay_alerts.settings")  # isort:skip
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "alerts_backend.settings")  # isort:skip
 
-app = celery.Celery("ebay_alerts")
+app = celery.Celery("alerts_backend")
 
 # Using a string here means the worker does not have to serialize
 # the configuration object to child processes.
