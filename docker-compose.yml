@@ -1,0 +1,46 @@
+version: "3.8"
+services:
+
+  alerts_backend:
+    build:
+      context: ./alerts_backend
+      dockerfile: dockerfiles/server.dockerfile
+    container_name: alerts_backend
+    volumes:
+      - ./alerts_backend:/app
+#    - ./media:/app/media
+    ports:
+      - '8000:8000'
+    depends_on:
+      - alerts_backend_celery
+
+  alerts_backend_celery:
+    build:
+      context: ./alerts_backend
+      dockerfile: dockerfiles/celery.dockerfile
+    container_name: alerts_backend_celery
+    volumes:
+      - ./alerts_backend:/app
+    depends_on:
+      - smtp_server
+      - alerts_backend_redis
+      - alerts_backend_postgres
+
+  alerts_backend_redis:
+    image: redis:7.0.11-alpine
+    container_name: alerts_backend_redis
+
+  alerts_backend_postgres:
+    build:
+      context: ./alerts_backend
+      dockerfile: dockerfiles/postgres.dockerfile
+    container_name: alerts_backend_postgres
+    env_file:
+      - ./alerts_backend/env/postgres.env
+
+  smtp_server:
+    image: redis:7.0.11-alpine
+    container_name: smtp_server
+    ports:
+      - '2500:2500'
+      - '9000:9000'
