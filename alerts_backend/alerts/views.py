@@ -9,6 +9,7 @@ from .utils.mails import send_html_mail
 
 logger = logging.getLogger(__name__)
 
+
 class AlertViewSet(ModelViewSet):
     serializer_class = AlertSerializer
     queryset = Alert.objects.all().order_by("id")

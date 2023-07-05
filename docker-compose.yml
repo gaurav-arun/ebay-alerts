@@ -2,46 +2,45 @@ version: "3.8"
 
 services:
 
-  alerts_backend:
+  alerts:
     build:
       context: ./alerts_backend
       dockerfile: dockerfiles/server.dockerfile
-    container_name: alerts_backend
+    container_name: alerts
     volumes:
       - ./alerts_backend:/app
-#    - ./media:/app/media
     environment:
-      - DJANGO_SETTINGS_MODULE=alerts_backend.settings_local
+      - DJANGO_SETTINGS_MODULE=alerts_backend.settings_docker
     ports:
       - '8000:8000'
     depends_on:
-      - alerts_backend_celery
+      - alerts_celery
 
-  alerts_backend_celery:
+  alerts_celery:
     build:
       context: ./alerts_backend
       dockerfile: dockerfiles/celery.dockerfile
-    container_name: alerts_backend_celery
+    container_name: alerts_celery
     volumes:
       - ./alerts_backend:/app
     environment:
-      - DJANGO_SETTINGS_MODULE=alerts_backend.settings_local
+      - DJANGO_SETTINGS_MODULE=alerts_backend.settings_docker
     depends_on:
       - smtp_server
-      - alerts_backend_redis
-      - alerts_backend_postgres
+      - alerts_redis
+      - alerts_postgres
 
-  alerts_backend_redis:
+  alerts_redis:
     image: redis:7.0.11-alpine
     ports:
       - '6379:6379'
-    container_name: alerts_backend_redis
+    container_name: alerts_redis
 
-  alerts_backend_postgres:
+  alerts_postgres:
     build:
       context: ./alerts_backend
       dockerfile: dockerfiles/postgres.dockerfile
-    container_name: alerts_backend_postgres
+    container_name: alerts_postgres
     ports:
       - '5432:5432'
     env_file:
@@ -51,12 +50,12 @@ services:
     image: "inbucket/inbucket:stable"
     container_name: smtp_server
     ports:
-      - '2500:2500'
+#      - '2500:2500'
       - '9000:9000'
 
-  swagger_ui:
+  alerts_swagger_ui:
     image: "swaggerapi/swagger-ui"
-    container_name: swagger_ui
+    container_name: alerts_swagger_ui
     ports:
       - '8080:8080'
     environment:
@@ -64,6 +63,56 @@ services:
     volumes:
         - ./alerts_backend/schema.yml:/schema.yml
 
-#networks:
-#    default:
-#        name: alerts_backend_network
+  analytics_backend:
+    build:
+      context: ./analytics
+      dockerfile: dockerfiles/server.dockerfile
+    container_name: analytics_backend
+    volumes:
+      - ./analytics:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=analytics.settings_docker
+    ports:
+      - '8001:8001'
+    depends_on:
+      - analytics_celery
+
+  analytics_celery:
+    build:
+      context: ./analytics
+      dockerfile: dockerfiles/celery.dockerfile
+    container_name: analytics_celery
+    volumes:
+      - ./analytics:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=analytics.settings_docker
+    depends_on:
+      - smtp_server
+      - analytics_redis
+      - analytics_postgres
+
+  analytics_redis:
+    image: redis:7.0.11-alpine
+    ports:
+      - '6380:6379'
+    container_name: analytics_redis
+
+  analytics_postgres:
+    build:
+      context: ./analytics
+      dockerfile: dockerfiles/postgres.dockerfile
+    container_name: analytics_postgres
+    ports:
+      - '5433:5432'
+    env_file:
+      - ./analytics/env/postgres.env
+
+  analytics_swagger_ui:
+    image: "swaggerapi/swagger-ui"
+    container_name: analytics_swagger_ui
+    ports:
+      - '8081:8080'
+    environment:
+      - SWAGGER_JSON=/schema.yml
+    volumes:
+      - ./analytics/schema.yml:/schema.yml

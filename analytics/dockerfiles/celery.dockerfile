@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.11
 
 WORKDIR /app
 
@@ -15,4 +15,3 @@ COPY . .
 RUN chmod +x scripts/entrypoint.sh
 ENTRYPOINT ["scripts/entrypoint.sh"]
 
-CMD ["python", "-m", "celery", "-A", "alerts_backend", "worker", "-E", "-l", "INFO"]
