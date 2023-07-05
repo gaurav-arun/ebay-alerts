@@ -16,17 +16,17 @@ paths:
           type: integer
       tags:
       - alert
-#      security:
-#      - cookieAuth: []
-#      - basicAuth: []
-#      - {}
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
       responses:
         '200':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedAlertList'
-          description: 'Get all alerts'
+          description: ''
     post:
       operationId: alert_create
       tags:
