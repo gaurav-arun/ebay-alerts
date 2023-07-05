@@ -1,5 +1,10 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'bootstrap-css-only/css/bootstrap.min.css';
+import 'mdbreact/dist/css/mdb.css';
+// import FullScreenModal from "./FullScreenModal";
+import DatatablePage from './DataTablePage';
 
 function App() {
   return (
@@ -19,7 +24,10 @@ function App() {
     //     </a>
     //   </header>
     // </div>
-    <h1 className="App">Hello World!</h1>
+    <div className="App">
+      {/* <FullScreenModal /> */}
+      <DatatablePage />
+    </div>
   );
 }
 

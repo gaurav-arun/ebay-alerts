@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+
+.fullscreen-modal-overlay {
+  background-color: rgba(219, 172, 172, 0.543);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: #0c48c1 10px solid;
+  opacity: 0.5;
+}
+
+.fullscreen-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #cfcbcb;
+  
+}
