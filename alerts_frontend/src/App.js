@@ -4,7 +4,8 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css';
 import 'mdbreact/dist/css/mdb.css';
 // import FullScreenModal from "./FullScreenModal";
-import DatatablePage from './DataTablePage';
+// import DatatablePage from './DataTablePage';
+import TableComponent from './TableComponent';
 
 function App() {
   return (
@@ -26,7 +27,8 @@ function App() {
     // </div>
     <div className="App">
       {/* <FullScreenModal /> */}
-      <DatatablePage />
+      {/* <DatatablePage /> */}
+      <TableComponent />
     </div>
   );
 }
