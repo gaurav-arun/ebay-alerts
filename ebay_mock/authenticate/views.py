@@ -28,55 +28,6 @@ class ClientCredentials(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-sample_response = {
-    "href": "https://api.ebay.com/buy/browse/v1/item_summary/search?q=drone&limit=3&offset=0",
-    "total": 260202,
-    "next": "https://api.ebay.com/buy/browse/v1/item_summary/search?q=drone&limit=3&offset=3",
-    "limit": 20,
-    "offset": 0,
-    "itemSummaries": [
-        {
-            "itemId": "v1|1**********1|0",
-            "title": "Syma X5SW-V3 Wifi FPV RC Drone Quadcopter 2.4Ghz 6-Axis Gyro with Headless Mode",
-            "price": {
-                "value": "59.99",
-                "currency": "USD"
-            },
-            "buyingOptions": [
-                "FIXED_PRICE",
-                "BEST_OFFER"
-            ],
-            "listingMarketplaceId": "EBAY_US"
-        },
-        {
-            "itemId": "v1|3**********8|0",
-            "title": "2022 New RC Drone 4k HD Wide Angle Camera WIFI FPV Foldable Camera Quadcopter US",
-            "price": {
-                "value": "46.99",
-                "currency": "USD"
-            },
-            "buyingOptions": [
-                "FIXED_PRICE",
-                "BEST_OFFER"
-            ],
-            "listingMarketplaceId": "EBAY_US"
-        },
-        {
-            "itemId": "v1|3**********1|0",
-            "title": "WiFi FPV RC Drone with 4K HD Camera, 40 Mins Flight Time, Foldable Drone",
-            "price": {
-                "value": "49.99",
-                "currency": "USD"
-            },
-            "buyingOptions": [
-                "FIXED_PRICE"
-            ],
-            "listingMarketplaceId": "EBAY_US"
-        }
-    ]
-}
-
-
 class BuyAPI(APIView):
     @classmethod
     def _generate_random_numbers(cls, lower_bound=None, upper_bound=None, sample_size=20) -> list[int]:
@@ -129,12 +80,13 @@ class BuyAPI(APIView):
 
     def get(self, request, format=None):
         q = request.query_params.get('q')
+        limit = request.query_params.get('limit', 20)
         data = {
-            "href": f"https://api.ebay.com/buy/browse/v1/item_summary/search?q={q}&limit=20&offset=0&sort=-price",
+            "href": f"https://api.ebay.com/buy/browse/v1/item_summary/search?q={q}&limit={limit}&offset=0&sort=-price",
             "total": 260202,
-            "next": f"https://api.ebay.com/buy/browse/v1/item_summary/search?q={q}&limit=20&offset=20=-price&sort=-price",
+            "next": f"https://api.ebay.com/buy/browse/v1/item_summary/search?q={q}&limit={limit}&offset=20=-price&sort=-price",
             "limit": 20,
             "offset": 0,
-            "itemSummaries": self.generate_items(search_phrase=q)
+            "itemSummaries": self.generate_items(search_phrase=q, sample_size=int(limit))
         }
         return Response(data=data, status=status.HTTP_200_OK)
