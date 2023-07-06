@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            width: 80%;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid black;
+        }
+        img {
+            max-width: 100px;
+            max-height: 100px;
+            width: auto;
+            height: auto;
+        }
+        h2 {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: #333333;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .title {
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <h2>Alert for "{{ keywords }}"</h2>
+    <table>
+        <tr>
+            <th>Image</th>
+            <th>Product ID</th>
+            <th>Product Title</th>
+            <th>Price</th>
+            <th>URL</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td><img src="{{ item.image.image_url }}" alt="Item Image"></td>
+            <td>{{ item.item_id }}</td>
+            <td class="title">{{ item.title }}</td>
+            <td>{{ item.price.currency }} <b>{{ item.price.value }}</b></td>
+            <td><a href="{{ item.item_web_url }}">View Listing</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
