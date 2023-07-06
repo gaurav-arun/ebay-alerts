@@ -32,7 +32,8 @@ SPECTACULAR_SETTINGS = {
 ALLOWED_HOSTS = []
 # For Swagger UI
 CORS_ALLOWED_ORIGINS = [
-    f"http://localhost:8080",
+    "http://localhost:8080",
+    "http://localhost:3000",
 ]
 
 
