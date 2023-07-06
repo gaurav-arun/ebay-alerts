@@ -44,7 +44,7 @@ services:
     ports:
       - '5432:5432'
     env_file:
-      - ./alerts_backend/env/postgres.env
+      - alerts_backend/dockerfiles/env/postgres.env
 
   smtp_server:
     image: "inbucket/inbucket:stable"

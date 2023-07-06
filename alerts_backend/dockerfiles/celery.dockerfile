@@ -13,7 +13,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Set the entrypoint
-RUN chmod +x scripts/entrypoint.sh
-ENTRYPOINT ["scripts/entrypoint.sh"]
+RUN chmod +x dockerfiles/scripts/entrypoint.sh
+ENTRYPOINT ["dockerfiles/scripts/entrypoint.sh"]
 
 #CMD ["python", "-m", "celery", "-A", "alerts_backend", "worker", "-E", "-l", "INFO"]
