@@ -1,10 +1,9 @@
-from .client import BuyApi, Auth
+from . import client
 from . import models
 from . import utils
 
 __all__ = [
-    'Auth',
-    'BuyApi',
+    'client',
     'models',
     'utils',
 ]

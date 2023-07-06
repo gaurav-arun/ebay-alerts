@@ -1,11 +1,4 @@
-from django.conf import settings
-import requests
-from django.core.cache import cache
-from django.conf import settings
-from dataclasses import dataclass
-from dataclasses_json import dataclass_json
-import logging
-import base64
+from dataclasses import dataclass, field
 from dataclasses_json import LetterCase, config, dataclass_json
 
 
@@ -35,5 +28,5 @@ class Price:
 class ItemSummary:
     item_id: str
     title: str
-    price: Price
-    image: Image
+    price: Price = field(default_factory=lambda: Price(currency='', value=0.0))
+    image: Image = field(default_factory=lambda: Image(image_url=''))

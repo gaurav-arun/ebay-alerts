@@ -2,26 +2,26 @@ import requests
 from django.core.cache import cache
 from . import utils as ebay_utils
 from .models import AccessToken
+from . import constants
 
 
 class Auth:
     URL = ebay_utils.get_base_url() + '/identity/v1/oauth2/token'
-
-    # The token expires in 7200 seconds,
-    # but we want to cache it for a little less than that
-    REDUCE_EXPIRATION_TIME_BY = 60
 
     @classmethod
     def _cache_token(cls, key: str, value: str, timeout: int):
         cache.set(key=key, value=value, timeout=timeout)
 
     @classmethod
-    def get_token(cls, api_key: str) -> str:
+    def get_token(cls, api_key: str, refresh_token=False) -> str:
+        if refresh_token:
+            cache.delete(api_key)
+
         token = cache.get(api_key)
 
         if token is None:
             access_token: AccessToken = cls._get_new_token()
-            cls._cache_token(key=api_key, value=access_token.access_token, timeout=access_token.expires_in - cls.REDUCE_EXPIRATION_TIME_BY)
+            cls._cache_token(key=api_key, value=access_token.access_token, timeout=access_token.expires_in - constants.REDUCE_EXPIRATION_TIME_BY)
             token = access_token.access_token
 
         return token

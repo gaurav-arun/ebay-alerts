@@ -1,16 +1,12 @@
 from django.conf import settings
-import requests
-from django.core.cache import cache
-from django.conf import settings
-from dataclasses import dataclass
-from dataclasses_json import dataclass_json
-import logging
 import base64
-from dataclasses_json import LetterCase, config, dataclass_json
 from .models import ItemSummary
 
 
 def get_base_url():
+    """
+    Returns the base url for the ebay api based on the environment
+    """
     if settings.EBAY_API_ENV == 'production':
         return 'https://api.ebay.com'
     elif settings.EBAY_API_ENV == 'sandbox':
@@ -33,10 +29,19 @@ def get_encoded_oauth_basic_token() -> str:
         client_id = settings.EBAY_CLIENT_ID_PRODUCTION
         client_secret = settings.EBAY_CLIENT_SECRET_PRODUCTION
 
+    if not client_id or client_secret:
+        raise ValueError('EBAY_CLIENT_ID_<SANDBOX|PRODUCTION> and '
+                         'EBAY_CLIENT_SECRET_<SANDBOX|PRODUCTION> must be set in .env')
+
     client_creds = ':'.join([client_id, client_secret]).encode('utf-8')
     return base64.b64encode(client_creds).decode('utf-8')
 
 
-def parse_response(response: dict) -> list[ItemSummary]:
-    items = response.get('itemSummaries', [])
-    return [ItemSummary.from_dict(item) for item in items]
+def parse_response(response: dict, skip_items_without_price: bool = True) -> list[ItemSummary]:
+    item_summaries = response.get('itemSummaries', [])
+    items = [ItemSummary.from_dict(item_summary) for item_summary in item_summaries]
+
+    if skip_items_without_price:
+        items = [item for item in items if item.price.currency and item.price.value]
+
+    return items
