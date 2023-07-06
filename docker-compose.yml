@@ -4,11 +4,12 @@ services:
 
   alerts:
     build:
-      context: ./alerts_backend
-      dockerfile: dockerfiles/server.dockerfile
+      context: .
+      dockerfile: alerts_backend/dockerfiles/server.dockerfile
     container_name: alerts
     volumes:
       - ./alerts_backend:/app
+      - ./pubsub:/app/pubsub
     environment:
       - DJANGO_SETTINGS_MODULE=alerts_backend.settings_docker
     ports:
@@ -18,11 +19,12 @@ services:
 
   alerts_celery:
     build:
-      context: ./alerts_backend
-      dockerfile: dockerfiles/celery.dockerfile
+      context: .
+      dockerfile: alerts_backend/dockerfiles/celery.dockerfile
     container_name: alerts_celery
     volumes:
       - ./alerts_backend:/app
+      - ./pubsub:/app/pubsub
     environment:
       - DJANGO_SETTINGS_MODULE=alerts_backend.settings_docker
     depends_on:
@@ -38,8 +40,8 @@ services:
 
   alerts_postgres:
     build:
-      context: ./alerts_backend
-      dockerfile: dockerfiles/postgres.dockerfile
+      context: .
+      dockerfile: alerts_backend/dockerfiles/postgres.dockerfile
     container_name: alerts_postgres
     ports:
       - '5432:5432'
@@ -65,11 +67,12 @@ services:
 
   analytics_backend:
     build:
-      context: ./analytics
-      dockerfile: dockerfiles/server.dockerfile
+      context: .
+      dockerfile: analytics/dockerfiles/server.dockerfile
     container_name: analytics_backend
     volumes:
       - ./analytics:/app
+      - ./pubsub:/app/pubsub
     environment:
       - DJANGO_SETTINGS_MODULE=analytics.settings_docker
     ports:
@@ -79,11 +82,12 @@ services:
 
   analytics_celery:
     build:
-      context: ./analytics
-      dockerfile: dockerfiles/celery.dockerfile
+      context: .
+      dockerfile: analytics/dockerfiles/celery.dockerfile
     container_name: analytics_celery
     volumes:
       - ./analytics:/app
+      - ./pubsub:/app/pubsub
     environment:
       - DJANGO_SETTINGS_MODULE=analytics.settings_docker
     depends_on:
@@ -99,8 +103,8 @@ services:
 
   analytics_postgres:
     build:
-      context: ./analytics
-      dockerfile: dockerfiles/postgres.dockerfile
+      context: .
+      dockerfile: analytics/dockerfiles/postgres.dockerfile
     container_name: analytics_postgres
     ports:
       - '5433:5432'

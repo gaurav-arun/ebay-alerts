@@ -6,11 +6,12 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV DJANGO_SETTINGS_MODULE=alerts_backend.settings_local
 
-COPY requirements.txt .
+COPY alerts_backend/requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY alerts_backend .
+COPY pubsub ./pubsub
 
 # Set the entrypoint
 RUN chmod +x dockerfiles/scripts/entrypoint.sh

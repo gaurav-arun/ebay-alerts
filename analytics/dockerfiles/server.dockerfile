@@ -5,11 +5,12 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-COPY requirements.txt .
+COPY analytics/requirements.txt .
 
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY analytics .
+COPY pubsub ./pubsub
 
 # For documentation
 EXPOSE 8001
