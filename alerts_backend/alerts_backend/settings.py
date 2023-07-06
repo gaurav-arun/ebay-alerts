@@ -35,6 +35,7 @@ EBAY_CLIENT_ID_SANDBOX = os.environ.get('EBAY_CLIENT_ID_SANDBOX')
 EBAY_CLIENT_SECRET_SANDBOX = os.environ.get('EBAY_CLIENT_SECRET_SANDBOX')
 EBAY_CLIENT_ID_PRODUCTION = os.environ.get('EBAY_CLIENT_ID_PRODUCTION')
 EBAY_CLIENT_SECRET_PRODUCTION = os.environ.get('EBAY_CLIENT_SECRET_PRODUCTION')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@ebayalerts.com')
 
 
 ALLOWED_HOSTS = []
@@ -63,24 +64,24 @@ REST_FRAMEWORK = {
 
 # Email settings for Inbucket (Local)
 # -----------------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = '2500'
-# TODO: Check if host user and password are required
-EMAIL_HOST_USER = 'your@djangoapp.com'
-EMAIL_HOST_PASSWORD = 'password'
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = False
-
-# # # Email settings for Mailtrap (Local)
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-# EMAIL_PORT = '2525'
-# # TODO: Host user and password are provided in send_mail() function for mailtrap to work
-# EMAIL_HOST_USER = 'be6c3e73d086a1'
-# EMAIL_HOST_PASSWORD = 'e98802c26bf19d'
+# EMAIL_HOST = 'localhost'
+# EMAIL_PORT = '2500'
+# # TODO: Check if host user and password are required
+# EMAIL_HOST_USER = 'your@djangoapp.com'
+# EMAIL_HOST_PASSWORD = 'password'
 # EMAIL_USE_TLS = False
 # EMAIL_USE_SSL = False
+
+# # # Email settings for Mailtrap (Local)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_PORT = '2525'
+# TODO: Host user and password are provided in send_mail() function for mailtrap to work
+EMAIL_HOST_USER = 'be6c3e73d086a1'
+EMAIL_HOST_PASSWORD = 'e98802c26bf19d'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = False
 
 
 # Application definition
