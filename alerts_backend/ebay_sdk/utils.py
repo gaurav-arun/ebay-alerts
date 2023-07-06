@@ -29,7 +29,7 @@ def get_encoded_oauth_basic_token() -> str:
         client_id = settings.EBAY_CLIENT_ID_PRODUCTION
         client_secret = settings.EBAY_CLIENT_SECRET_PRODUCTION
 
-    if not client_id or client_secret:
+    if not client_id or not client_secret:
         raise ValueError('EBAY_CLIENT_ID_<SANDBOX|PRODUCTION> and '
                          'EBAY_CLIENT_SECRET_<SANDBOX|PRODUCTION> must be set in .env')
 
@@ -43,5 +43,8 @@ def parse_response(response: dict, skip_items_without_price: bool = True) -> lis
 
     if skip_items_without_price:
         items = [item for item in items if item.price.currency and item.price.value]
+
+    # Sort by price
+    items.sort(key=lambda item: item.price.value)
 
     return items
