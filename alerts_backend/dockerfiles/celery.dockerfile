@@ -17,4 +17,5 @@ COPY pubsub ./pubsub
 RUN chmod +x dockerfiles/scripts/entrypoint.sh
 ENTRYPOINT ["dockerfiles/scripts/entrypoint.sh"]
 
-#CMD ["python", "-m", "celery", "-A", "alerts_backend", "worker", "-E", "-l", "INFO"]
+CMD celery -A alerts_backend beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler & \
+    celery -A alerts_backend worker --loglevel=info

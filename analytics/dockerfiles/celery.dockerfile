@@ -16,3 +16,5 @@ COPY pubsub ./pubsub
 RUN chmod +x dockerfiles/scripts/entrypoint.sh
 ENTRYPOINT ["dockerfiles/scripts/entrypoint.sh"]
 
+CMD celery -A analytics beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler & \
+    celery -A analytics worker --loglevel=info

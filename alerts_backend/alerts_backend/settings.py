@@ -35,7 +35,7 @@ EBAY_CLIENT_ID_SANDBOX = os.environ.get('EBAY_CLIENT_ID_SANDBOX')
 EBAY_CLIENT_SECRET_SANDBOX = os.environ.get('EBAY_CLIENT_SECRET_SANDBOX')
 EBAY_CLIENT_ID_PRODUCTION = os.environ.get('EBAY_CLIENT_ID_PRODUCTION')
 EBAY_CLIENT_SECRET_PRODUCTION = os.environ.get('EBAY_CLIENT_SECRET_PRODUCTION')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@ebayalerts.com')
+EBAY_MOCK_SERVER_URL = os.environ.get('EBAY_MOCK_SERVER_URL', 'http://localhost:3000')
 
 
 ALLOWED_HOSTS = []
@@ -83,6 +83,7 @@ EMAIL_HOST_PASSWORD = 'e98802c26bf19d'
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = False
 
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@ebayalerts.com')
 
 # Application definition
 
@@ -98,6 +99,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "drf_spectacular",
+    "django_celery_beat",
     # "django_extensions",
 ]
 
