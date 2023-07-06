@@ -105,7 +105,7 @@ services:
     ports:
       - '5433:5432'
     env_file:
-      - ./analytics/env/postgres.env
+      - analytics/dockerfiles/env/postgres.env
 
   analytics_swagger_ui:
     image: "swaggerapi/swagger-ui"
