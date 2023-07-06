@@ -11,10 +11,14 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+
+import dotenv
+dotenv.load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -24,6 +28,14 @@ SECRET_KEY = "django-insecure-1x^a)b3k429d%$xfy5c75ck)ep&y6da9p6@oc96hf@**f&a^$&
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+# Ebay API settings
+EBAY_API_ENV = os.environ.get('EBAY_API_ENV', 'sandbox')
+EBAY_CLIENT_ID_SANDBOX = os.environ.get('EBAY_CLIENT_ID_SANDBOX')
+EBAY_CLIENT_SECRET_SANDBOX = os.environ.get('EBAY_CLIENT_SECRET_SANDBOX')
+EBAY_CLIENT_ID_PRODUCTION = os.environ.get('EBAY_CLIENT_ID_PRODUCTION')
+EBAY_CLIENT_SECRET_PRODUCTION = os.environ.get('EBAY_CLIENT_SECRET_PRODUCTION')
+
 
 ALLOWED_HOSTS = []
 CORS_ALLOWED_ORIGINS = [
