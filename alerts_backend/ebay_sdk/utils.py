@@ -12,7 +12,7 @@ def get_base_url():
     elif settings.EBAY_API_ENV == 'sandbox':
         return 'https://api.sandbox.ebay.com'
     elif settings.EBAY_API_ENV == 'mock':
-        return 'http://localhost:8002'
+        return settings.EBAY_MOCK_SERVER_URL
 
     raise ValueError('EBAY_API_ENV is should be one of production, sandbox, or mock')
 
