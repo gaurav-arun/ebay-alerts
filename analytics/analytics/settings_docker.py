@@ -40,8 +40,8 @@ EMAIL_HOST = os.environ.get('EMAIL_HOST', 'sandbox.smtp.mailtrap.io')
 EMAIL_PORT = os.environ.get('EMAIL_PORT', '2525')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', False)
-EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', False)
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', "False") == "True"
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', "False") == "True"
 
 
 # Redis
@@ -81,3 +81,10 @@ DATABASES = {
         "PORT": POSTGRES_PORT,
     }
 }
+
+
+# PubSub
+PUBSUB_HOST = os.environ.get('PUBSUB_HOST', 'localhost')
+PUBSUB_PORT = os.environ.get('PUBSUB_PORT', 6379)
+PUBSUB_CHANNEL = os.environ.get('PUBSUB_CHANNEL', 'ebay-alerts')
+PUBSUB_DEFAULT_DB = os.environ.get('PUBSUB_DEFAULT_DB', 0)
