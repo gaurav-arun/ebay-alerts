@@ -52,6 +52,7 @@ class BuyAPI(APIView):
                     "currency": "USD"
                 },
                 "image": {'imageUrl': 'https://i.ebayimg.com/thumbs/images/g/ukgAAOSwSTZjYqeH/s-l225.jpg'},
+                "itemWebUrl": f"https://www.ebay.com"
             }
             products.append(product)
 
