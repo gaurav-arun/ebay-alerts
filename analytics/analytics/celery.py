@@ -16,18 +16,9 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
-    # "insights": {
-    #     "task": "alerts.tasks.send_alert",
-    #     "schedule": crontab(hour="*/12"),
-    # },
-    # "alert_every_10_minutes": {
-    #     "task": "alerts.tasks.send_alert",
-    #     "schedule": crontab(minute="*/10"),
-    #     "kwargs": {"frequency": 10},
-    # },
-    # "alert_every_30_minutes": {
-    #     "task": "alerts.tasks.send_alert",
-    #     "schedule": crontab(minute="*/10"),
-    #     "kwargs": {"frequency": 30},
-    # }
+    "product_insights": {
+        "task": "insights.tasks.send_product_insights",
+        # TODO: Change to day after testing
+        "schedule": crontab(hours="*/3"),
+    },
 }
