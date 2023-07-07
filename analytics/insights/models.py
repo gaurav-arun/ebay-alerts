@@ -9,7 +9,7 @@ class TimestampedModel(models.Model):
         abstract = True
 
 
-class AlertEvent(TimestampedModel):
+class PersistedEvent(TimestampedModel):
     type = models.CharField(max_length=255)
     payload = models.JSONField()
     timestamp = models.DateTimeField(null=True, blank=True)
