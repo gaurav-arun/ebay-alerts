@@ -110,7 +110,7 @@ LOGGING = {
     'formatters': {
         'default': {
             'format': '[%(process)d] %(levelname)s %(asctime)s %(module)s '
-                      '%(name)s.%(DJANGOfuncName)s:%(lineno)s: %(message)s'
+                      '%(name)s.%(funcName)s:%(lineno)s: %(message)s'
         },
     },
     'handlers': {
