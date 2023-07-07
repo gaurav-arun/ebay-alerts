@@ -37,6 +37,10 @@ EBAY_CLIENT_ID_PRODUCTION = os.environ.get('EBAY_CLIENT_ID_PRODUCTION')
 EBAY_CLIENT_SECRET_PRODUCTION = os.environ.get('EBAY_CLIENT_SECRET_PRODUCTION')
 EBAY_MOCK_SERVER_URL = os.environ.get('EBAY_MOCK_SERVER_URL', 'http://localhost:3000')
 
+# PubSub settings
+PUBSUB_HOST = os.environ.get('PUBSUB_HOST', 'localhost')
+PUBSUB_PORT = os.environ.get('PUBSUB_PORT', 6379)
+PUBSUB_CHANNEL = os.environ.get('PUBSUB_CHANNEL', 'ebay-alerts')
 
 ALLOWED_HOSTS = []
 CORS_ALLOWED_ORIGINS = [
@@ -49,7 +53,6 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'APIs to perform CRUD operations for Alerts',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    # OTHER SETTINGS
     'SERVERS': [{
         'url': 'http://localhost:8000/',
         'description': 'Local server'

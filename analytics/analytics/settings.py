@@ -11,13 +11,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dotenv
+dotenv.load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-1x^a)b3k429d%$xfy5c75ck)ep&y6da9p6@oc96hf@**f&a^$&"
@@ -30,17 +30,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8081",
 ]
 
-# SPECTACULAR_SETTINGS = {
-#     'TITLE': 'Analytics',
-#     'DESCRIPTION': 'APIs to perform CRUD operations for Insight',
-#     'VERSION': '1.0.0',
-#     'SERVE_INCLUDE_SCHEMA': False,
-#     # OTHER SETTINGS
-#     'SERVERS': [{
-#         'url': 'http://localhost:8001/',
-#         'description': 'Local server'
-#     }],
-# }
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
@@ -48,26 +37,26 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 3,
 }
 
-# Email settings for Inbucket (Local)
-# -----------------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = '2500'
-# TODO: Check if host user and password are required
-EMAIL_HOST_USER = 'your@djangoapp.com'
-EMAIL_HOST_PASSWORD = 'password'
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = False
-
-# # # Email settings for Mailtrap (Local)
+# # Email settings for Inbucket (Local)
+# # -----------------------------------
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-# EMAIL_PORT = '2525'
-# # TODO: Host user and password are provided in send_mail() function for mailtrap to work
-# EMAIL_HOST_USER = 'be6c3e73d086a1'
-# EMAIL_HOST_PASSWORD = 'e98802c26bf19d'
+# EMAIL_HOST = 'localhost'
+# EMAIL_PORT = '2500'
+# # TODO: Check if host user and password are required
+# EMAIL_HOST_USER = 'your@djangoapp.com'
+# EMAIL_HOST_PASSWORD = 'password'
 # EMAIL_USE_TLS = False
 # EMAIL_USE_SSL = False
+
+# # Email settings for Mailtrap (Local)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_PORT = '2525'
+# TODO: Host user and password are provided in send_mail() function for mailtrap to work
+EMAIL_HOST_USER = 'be6c3e73d086a1'
+EMAIL_HOST_PASSWORD = 'e98802c26bf19d'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = False
 
 
 # Application definition
@@ -115,37 +104,17 @@ TEMPLATES = [
     },
 ]
 
-# TEMPLATES = [
-#     {
-#         "BACKEND": "django.template.backends.django.DjangoTemplates",
-#         "DIRS": [str(BASE_DIR / "templates")],
-#         "APP_DIRS": True,
-#         "OPTIONS": {
-#             "context_processors": [
-#                 "django.template.context_processors.debug",
-#                 "django.template.context_processors.request",
-#                 "django.contrib.auth.context_processors.auth",
-#                 "django.contrib.messages.context_processors.messages",
-#             ]
-#         },
-#     }
-# ]
 
 WSGI_APPLICATION = "analytics.wsgi.application"
 
 DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-# Store file in "/tmp"
-# MEDIA_ROOT = tempfile.gettempdir()
+
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = ""
 
-# LOCALHOST = "host.docker.internal"
-# REDIS_HOST = "redis"
-# POSTGRES_HOST = "postgres"
-POSTGRES_HOST = "localhost"
-REDIS_HOST = "localhost"
 
 # Redis
+REDIS_HOST = "localhost"
 REDIS_URL = f"redis://{REDIS_HOST}:6380"
 CACHES = {
     "default": {
@@ -161,7 +130,7 @@ CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 
 # Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+POSTGRES_HOST = "localhost"
 
 DATABASES = {
     "default": {
