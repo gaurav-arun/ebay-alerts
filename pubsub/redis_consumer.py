@@ -7,7 +7,7 @@ class RedisConsumer(Consumer):
     def __init__(self, channel: str, host: str = 'localhost', port: int = 6381, db: int = 0):
         self.channel = channel
         self.redis_client = redis.StrictRedis(host=host, port=port, db=db)
-        self.pubsub = self.redis_client.pubsub()
+        self.pubsub = self.redis_client.pubsub(ignore_subscribe_messages=True)
         self.pubsub.subscribe(self.channel)
 
     def consume(self) -> Event:
