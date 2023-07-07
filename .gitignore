@@ -3,3 +3,6 @@ venv
 **/.ipynb_checkpoints
 **/dist
 /alerts_backend/.env
+/analytics/.env
+**/celerybeat-schedule
+**/alerts_backend/celerybeat-schedule.db
