@@ -14,3 +14,5 @@ class Alert(TimestampedModel):
     keywords = models.TextField(null=False, blank=False)
     frequency = models.IntegerField(null=False)
 
+    def __str__(self):
+        return f"[{self.id}]:[{self.email}]:[{self.keywords}]:[{self.frequency}]"
