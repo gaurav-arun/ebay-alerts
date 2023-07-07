@@ -9,17 +9,17 @@ from celery.schedules import crontab
 
 logger = logging.getLogger(__name__)
 
-app = celery.Celery("alerts_backend")
+app = celery.Celery("analytics")
 
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
 app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
-    "insights": {
-        "task": "alerts.tasks.send_alert",
-        "schedule": crontab(hour="*/12"),
-    },
+    # "insights": {
+    #     "task": "alerts.tasks.send_alert",
+    #     "schedule": crontab(hour="*/12"),
+    # },
     # "alert_every_10_minutes": {
     #     "task": "alerts.tasks.send_alert",
     #     "schedule": crontab(minute="*/10"),
