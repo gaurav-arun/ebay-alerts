@@ -104,6 +104,31 @@ TEMPLATES = [
     },
 ]
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': '[%(process)d] %(levelname)s %(asctime)s %(module)s '
+                      '%(name)s.%(DJANGOfuncName)s:%(lineno)s: %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+        }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        }
+    },
+}
+
 
 WSGI_APPLICATION = "analytics.wsgi.application"
 
