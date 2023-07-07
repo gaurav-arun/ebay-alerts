@@ -1,11 +1,11 @@
 from .producer import Producer
 import redis
-from event import Event
+from .event import Event
 import json
 
 
 class RedisProducer(Producer):
-    def __init__(self, channel: str, host: str = 'localhost', port: int = 6379, db: int = 0):
+    def __init__(self, channel: str, host: str = 'localhost', port: int = 6381, db: int = 0):
         self.channel = channel
         self.redis_client = redis.StrictRedis(host=host, port=port, db=db)
 

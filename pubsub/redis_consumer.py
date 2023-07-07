@@ -1,10 +1,10 @@
 from .consumer import Consumer
 import redis
-from event import Event
+from .event import Event
 
 
 class RedisConsumer(Consumer):
-    def __init__(self, channel: str, host: str = 'localhost', port: int = 6379, db: int = 0):
+    def __init__(self, channel: str, host: str = 'localhost', port: int = 6381, db: int = 0):
         self.channel = channel
         self.redis_client = redis.StrictRedis(host=host, port=port, db=db)
         self.pubsub = self.redis_client.pubsub()
