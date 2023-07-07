@@ -21,7 +21,6 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'APIs to perform CRUD operations for Alerts',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    # OTHER SETTINGS
     'SERVERS': [{
         'url': 'http://localhost:8000/',
         'description': 'Local server'
@@ -30,44 +29,42 @@ SPECTACULAR_SETTINGS = {
 
 
 ALLOWED_HOSTS = []
-# For Swagger UI
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-    "http://localhost:3000",
+    "http://localhost:8080",  # Swagger UI
+    "http://localhost:3000",  # Alert Frontend
 ]
 
 
-LOCALHOST = 'host.docker.internal'
+# Ebay API settings
+EBAY_API_ENV = os.environ.get('EBAY_API_ENV', 'sandbox')
+EBAY_CLIENT_ID_SANDBOX = os.environ.get('EBAY_CLIENT_ID_SANDBOX')
+EBAY_CLIENT_SECRET_SANDBOX = os.environ.get('EBAY_CLIENT_SECRET_SANDBOX')
+EBAY_CLIENT_ID_PRODUCTION = os.environ.get('EBAY_CLIENT_ID_PRODUCTION')
+EBAY_CLIENT_SECRET_PRODUCTION = os.environ.get('EBAY_CLIENT_SECRET_PRODUCTION')
+EBAY_MOCK_SERVER_URL = os.environ.get('EBAY_MOCK_SERVER_URL')
 
-# Email settings for Inbucket (Local)
-# -----------------------------------
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp_server'  # LOCALHOST
-# EMAIL_PORT = '2500'
-# # TODO: Check if host user and password are required
-# EMAIL_HOST_USER = 'your@djangoapp.com'
-# EMAIL_HOST_PASSWORD = 'password'
-# EMAIL_USE_TLS = False
-# EMAIL_USE_SSL = False
 
-# # Email settings for Mailtrap (Local)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-EMAIL_PORT = '2525'
-# TODO: Host user and password are provided in send_mail() function for mailtrap to work
-EMAIL_HOST_USER = 'be6c3e73d086a1'
-EMAIL_HOST_PASSWORD = 'e98802c26bf19d'
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = False
+# PubSub settings
+PUBSUB_HOST = os.environ.get('PUBSUB_HOST', 'localhost')
+PUBSUB_PORT = os.environ.get('PUBSUB_PORT', 6379)
+PUBSUB_CHANNEL = os.environ.get('PUBSUB_CHANNEL', 'ebay-alerts')
 
-POSTGRES_HOST = LOCALHOST  # TODO: Change to <container name> when running in docker
-POSTGRES_PORT = "5432"
 
-REDIS_HOST = LOCALHOST  # TODO: Change to <container name> when running in docker
-REDIS_PORT = "6379"
+# Email settings for Mailtrap
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'sandbox.smtp.mailtrap.io')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', '2525')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', False)
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', False)
+
 
 # Redis
+REDIS_HOST = os.environ.get('REDIS_HOST')
+REDIS_PORT = os.environ.get('REDIS_PORT')
 REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -77,20 +74,26 @@ CACHES = {
     }
 }
 
+
 # Celery
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 
+
 # Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+POSTGRES_HOST = os.environ.get('POSTGRES_HOST')
+POSTGRES_PORT = os.environ.get('POSTGRES_PORT')
+POSTGRES_DB = os.environ.get('POSTGRES_DB')
+POSTGRES_USER = os.environ.get('POSTGRES_USER')
+POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "ebay_alert",
-        "USER": "ebay_alert",
-        "PASSWORD": "ebay_alert",
-        "HOST": f"{POSTGRES_HOST}",
-        "PORT": f"{POSTGRES_PORT}"
+        "NAME": POSTGRES_DB,
+        "USER": POSTGRES_USER,
+        "PASSWORD": POSTGRES_PASSWORD,
+        "HOST": POSTGRES_HOST,
+        "PORT": POSTGRES_PORT,
     }
 }
