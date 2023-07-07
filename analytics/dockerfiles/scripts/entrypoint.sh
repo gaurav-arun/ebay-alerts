@@ -3,6 +3,7 @@
 set -e
 
 echo "Applying database migrations..."
+# TODO: Add --noinput flag to migration commands
 python manage.py makemigrations
 python manage.py migrate
 
