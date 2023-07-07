@@ -3,15 +3,19 @@ from __future__ import annotations
 import logging
 
 from celery import shared_task
-# from .utils import mails
-# from ebay_sdk import client, utils as ebay_utils
-from pubsub import RedisConsumer, Event
 
-from .models import Alert
+from pubsub import RedisConsumer, Event
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-consumer = RedisConsumer('alerts_stream', host="host.docker.internal", port=6381, db=0)
+
+consumer = RedisConsumer(
+    channel=settings.PUBSUB_CHANNEL,
+    host=settings.PUBSUB_HOST,
+    port=settings.PUBSUB_PORT,
+    db=settings.PUBSUB_DEFAULT_DB
+)
 
 
 @shared_task
