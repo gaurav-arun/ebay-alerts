@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import html2text
 from django.conf import settings
 
@@ -14,7 +12,8 @@ def send_html_mail(
     context: dict = None,
     from_email: str = settings.DEFAULT_FROM_EMAIL,
 ):
-    """Sends email rendered via templates.
+    """
+    Sends email rendered via templates.
 
     Parameters
     ----------
@@ -48,4 +47,5 @@ def send_html_mail(
         to=unique_to,
     )
     message.attach_alternative(html_version, "text/html")
+
     return message.send()

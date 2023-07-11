@@ -10,8 +10,8 @@ def publish_event(event_type: PubSubEventType, payload: dict) -> None:
     """
     Publishes an event to the pubsub channel
 
-    :param event_type: EventType
-    :param payload: dict
+    :param event_type: PubSubEventType
+    :param payload: A dictionary containing the payload for the event
     """
     try:
         producer = RedisProducer(

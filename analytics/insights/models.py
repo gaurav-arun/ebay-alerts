@@ -3,6 +3,9 @@ from pubsub import PubSubEventType
 
 
 class TimestampedModel(models.Model):
+    """
+    Abstract model to inject created_at and updated_at fields in models
+    """
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -11,6 +14,9 @@ class TimestampedModel(models.Model):
 
 
 class ConsumedPubSubEvent(TimestampedModel):
+    """
+    Model to track events consumed from PubSub
+    """
     type = models.CharField(max_length=255, choices=PubSubEventType.choices())
     payload = models.JSONField()
     timestamp = models.DateTimeField(null=True, blank=True)
@@ -21,6 +27,10 @@ class ConsumedPubSubEvent(TimestampedModel):
 
 
 class ProductPriceLog(models.Model):
+    """
+    Model to track price changes for products. This model is populated by processing
+    the consumed events from PubSub. This model is used to generate insights.
+    """
     item_id = models.CharField(max_length=255, db_index=True)
     title = models.CharField(max_length=1024)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -34,6 +44,10 @@ class ProductPriceLog(models.Model):
 
 
 class ActiveAlert(TimestampedModel):
+    """
+    Model to track alerts configured by the user and the products associated with
+    the alert. This model is populated by processing the consumed events from PubSub.
+    """
     uid = models.IntegerField(null=False, blank=False, db_index=True, unique=True)
     email = models.EmailField(max_length=128, db_index=True)
     keywords = models.TextField(null=False, blank=False)
