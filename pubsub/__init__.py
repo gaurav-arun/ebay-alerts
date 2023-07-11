@@ -1,9 +1,10 @@
-from .event import Event
+from .pubsubevent import PubSubEvent, PubSubEventType
 from .redis_consumer import RedisConsumer
 from .redis_producer import RedisProducer
 
 __all__ = [
-    'Event',
+    'PubSubEvent',
+    'PubSubEventType',
     'RedisConsumer',
     'RedisProducer',
 ]
