@@ -1,4 +1,4 @@
-from .models import Alert, ProductPriceLog, PubSubEventStore
+from .models import ActiveAlert, ProductPriceLog, PubSubEventStore
 from django.db.models import Q, Max, Min, Avg, F
 from datetime import datetime, timedelta
 
@@ -45,11 +45,11 @@ def gather_price_change_insight(product_ids, average_price_by_product_id, lookba
 def generate_insights(lookback_days=3) -> list[dict]:
     """Generate insights for all alerts"""
     # TODO: Remove after testing
-    alerts = Alert.objects.all().order_by('-id')[:1]
+    active_alerts = ActiveAlert.objects.all().order_by('-id')[:1]
 
     insights: list[dict] = []
-    for alert in alerts:
-        product_ids = alert.products.all().values_list('item_id', flat=True)
+    for alert in active_alerts:
+        product_ids = alert.tracked_products.all().values_list('item_id', flat=True)
 
         end_date = datetime.now().date()
         start_date = end_date - timedelta(weeks=2)

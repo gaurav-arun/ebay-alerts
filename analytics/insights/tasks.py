@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 
 from celery import shared_task
-from .models import Alert, PubSubEventStore, ProductPriceLog
+from .models import ActiveAlert, PubSubEventStore, ProductPriceLog
 from django.db import transaction
 from .insights import generate_insights
 from .utils import mails
@@ -22,7 +22,7 @@ def _process_new_products_event_type(event: PubSubEventStore) -> None:
 
     :param event: PubSubEvent
     """
-    alert, _ = Alert.objects.get_or_create(
+    alert, _ = ActiveAlert.objects.get_or_create(
         uid=event.payload['id'],
         defaults={
             'email': event.payload['email'],
@@ -46,7 +46,7 @@ def _process_new_products_event_type(event: PubSubEventStore) -> None:
         products.append(product)
 
     # Update Alert object to track latest Products
-    alert.products.set(products)
+    alert.tracked_products.set(products)
 
 
 def _process_alert_created_event_type(event: PubSubEventStore) -> None:
@@ -55,7 +55,7 @@ def _process_alert_created_event_type(event: PubSubEventStore) -> None:
 
     In this case we just create a new Alert object.
     """
-    alert, _ = Alert.objects.get_or_create(
+    alert, _ = ActiveAlert.objects.get_or_create(
         uid=event.payload['id'],
         defaults={
             'email': event.payload['email'],
@@ -72,7 +72,7 @@ def _process_alert_updated_event_type(event: PubSubEventStore):
     In this case we update the Alert object with the data from the
     event payload.
     """
-    alert = Alert.objects.get(
+    alert = ActiveAlert.objects.get(
         uid=event.payload['id']
     )
     alert.email = event.payload['email']
@@ -88,7 +88,7 @@ def _process_alert_deleted_event_type(event: PubSubEventStore):
     with the Product objects. However, Product objects are not deleted. This is
     because we want to keep track of the product prices over time.
     """
-    Alert.objects.get(uid=event.payload['id']).delete()
+    ActiveAlert.objects.get(uid=event.payload['id']).delete()
 
 
 @shared_task

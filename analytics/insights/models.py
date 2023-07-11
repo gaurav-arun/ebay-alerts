@@ -33,12 +33,12 @@ class ProductPriceLog(models.Model):
         return f"[{self.id}]:[{self.item_id}]:[{self.title}]:[{self.price}]:[{self.currency}]"
 
 
-class Alert(TimestampedModel):
+class ActiveAlert(TimestampedModel):
     uid = models.IntegerField(null=False, blank=False, db_index=True, unique=True)
     email = models.EmailField(max_length=128, db_index=True)
     keywords = models.TextField(null=False, blank=False)
     frequency = models.IntegerField(null=False)
-    products = models.ManyToManyField(ProductPriceLog, blank=True)
+    tracked_products = models.ManyToManyField(ProductPriceLog, blank=True)
 
     def __str__(self):
         return f"[{self.uid}]:[{self.email}]:[{self.keywords}]:[{self.frequency}]"
