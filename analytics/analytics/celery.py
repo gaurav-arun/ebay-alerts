@@ -19,6 +19,6 @@ app.conf.beat_schedule = {
     "product_insights": {
         "task": "insights.tasks.send_product_insights",
         # TODO: Change to day after testing
-        "schedule": crontab(hours="*/3"),
+        "schedule": crontab(minute="*/2"),
     },
 }
