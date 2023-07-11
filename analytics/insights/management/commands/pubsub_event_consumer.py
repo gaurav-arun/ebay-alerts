@@ -24,7 +24,7 @@ class Command(BaseCommand):
         :return:None
         """
         consumed_event = ConsumedPubSubEvent.objects.create(
-            type=pubsub_event.type,
+            type=pubsub_event.type.value,
             payload=pubsub_event.payload,
             timestamp=pubsub_event.timestamp,
             processed=False
@@ -48,7 +48,7 @@ class Command(BaseCommand):
         for pubsub_event in consumer.consume():
             # Generic exception handling to avoid crashing the consumer!
             try:
-                logger.info(f'ConsumedPubSubEvent : [{pubsub_event}]')
+                logger.info(f'PubSubEvent received by Analytics consumer: [{pubsub_event.type}]')
                 self.process(pubsub_event)
             except Exception as error:
-                logger.error(f'Error processing ConsumedPubSubEvent: {error} : {pubsub_event}')
+                logger.error(f'Error processing PubSubEvent: {error} : {pubsub_event}')
