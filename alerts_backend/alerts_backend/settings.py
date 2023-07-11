@@ -10,10 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 
 import dotenv
+
 dotenv.load_dotenv()
 
 
@@ -30,17 +31,17 @@ SECRET_KEY = "django-insecure-1x^a)b3k429d%$xfy5c75ck)ep&y6da9p6@oc96hf@**f&a^$&
 DEBUG = True
 
 # Ebay API settings
-EBAY_API_ENV = os.environ.get('EBAY_API_ENV', 'sandbox')
-EBAY_CLIENT_ID_SANDBOX = os.environ.get('EBAY_CLIENT_ID_SANDBOX')
-EBAY_CLIENT_SECRET_SANDBOX = os.environ.get('EBAY_CLIENT_SECRET_SANDBOX')
-EBAY_CLIENT_ID_PRODUCTION = os.environ.get('EBAY_CLIENT_ID_PRODUCTION')
-EBAY_CLIENT_SECRET_PRODUCTION = os.environ.get('EBAY_CLIENT_SECRET_PRODUCTION')
-EBAY_MOCK_SERVER_URL = os.environ.get('EBAY_MOCK_SERVER_URL', 'http://localhost:3000')
+EBAY_API_ENV = os.environ.get("EBAY_API_ENV", "sandbox")
+EBAY_CLIENT_ID_SANDBOX = os.environ.get("EBAY_CLIENT_ID_SANDBOX")
+EBAY_CLIENT_SECRET_SANDBOX = os.environ.get("EBAY_CLIENT_SECRET_SANDBOX")
+EBAY_CLIENT_ID_PRODUCTION = os.environ.get("EBAY_CLIENT_ID_PRODUCTION")
+EBAY_CLIENT_SECRET_PRODUCTION = os.environ.get("EBAY_CLIENT_SECRET_PRODUCTION")
+EBAY_MOCK_SERVER_URL = os.environ.get("EBAY_MOCK_SERVER_URL", "http://localhost:3000")
 
 # PubSub settings
-PUBSUB_HOST = os.environ.get('PUBSUB_HOST', 'localhost')
-PUBSUB_PORT = os.environ.get('PUBSUB_PORT', 6379)
-PUBSUB_CHANNEL = os.environ.get('PUBSUB_CHANNEL', 'ebay-alerts')
+PUBSUB_HOST = os.environ.get("PUBSUB_HOST", "localhost")
+PUBSUB_PORT = os.environ.get("PUBSUB_PORT", 6379)
+PUBSUB_CHANNEL = os.environ.get("PUBSUB_CHANNEL", "ebay-alerts")
 
 ALLOWED_HOSTS = []
 CORS_ALLOWED_ORIGINS = [
@@ -49,18 +50,15 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Ebay Alerts',
-    'DESCRIPTION': 'APIs to perform CRUD operations for Alerts',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
-    'SERVERS': [{
-        'url': 'http://localhost:8000/',
-        'description': 'Local server'
-    }],
+    "TITLE": "Ebay Alerts",
+    "DESCRIPTION": "APIs to perform CRUD operations for Alerts",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SERVERS": [{"url": "http://localhost:8000/", "description": "Local server"}],
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 5,
 }
@@ -77,16 +75,16 @@ REST_FRAMEWORK = {
 # EMAIL_USE_SSL = False
 
 # # # Email settings for Mailtrap (Local)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-EMAIL_PORT = '2525'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "sandbox.smtp.mailtrap.io"
+EMAIL_PORT = "2525"
 # TODO: Host user and password are provided in send_mail() function for mailtrap to work
-EMAIL_HOST_USER = 'be6c3e73d086a1'
-EMAIL_HOST_PASSWORD = 'e98802c26bf19d'
+EMAIL_HOST_USER = "be6c3e73d086a1"
+EMAIL_HOST_PASSWORD = "e98802c26bf19d"
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = False
 
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'noreply@ebayalerts.com')
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@ebayalerts.com")
 
 # Application definition
 
@@ -136,26 +134,26 @@ TEMPLATES = [
 ]
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'default': {
-            'format': '[%(process)d] %(levelname)s %(asctime)s %(module)s '
-                      '%(name)s.%(funcName)s:%(lineno)s: %(message)s'
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "format": "[%(process)d] %(levelname)s %(asctime)s %(module)s "
+            "%(name)s.%(funcName)s:%(lineno)s: %(message)s"
         },
     },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'default',
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "default",
         }
     },
-    'loggers': {
-        '': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
+    "loggers": {
+        "": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
         }
     },
 }

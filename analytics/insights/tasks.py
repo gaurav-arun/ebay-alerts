@@ -3,11 +3,13 @@ from __future__ import annotations
 import logging
 
 from celery import shared_task
-from .models import ActiveAlert, ConsumedPubSubEvent, ProductPriceLog
 from django.db import transaction
-from .insights import generate_insights
-from .utils import mails
+
 from pubsub import PubSubEventType
+
+from .insights import generate_insights
+from .models import ActiveAlert, ConsumedPubSubEvent, ProductPriceLog
+from .utils import mails
 
 logger = logging.getLogger(__name__)
 
@@ -22,25 +24,25 @@ def _process_new_products_event_type(event: ConsumedPubSubEvent) -> None:
     :param event: ConsumedPubSubEvent
     """
     alert, _ = ActiveAlert.objects.get_or_create(
-        uid=event.payload['id'],
+        uid=event.payload["id"],
         defaults={
-            'email': event.payload['email'],
-            'keywords': event.payload['keywords'],
-            'frequency': event.payload['frequency'],
-        }
+            "email": event.payload["email"],
+            "keywords": event.payload["keywords"],
+            "frequency": event.payload["frequency"],
+        },
     )
 
     # Create Product objects from event payload
     products: list[ProductPriceLog] = []
-    for item in event.payload['items']['itemSummaries']:
+    for item in event.payload["items"]["itemSummaries"]:
         product = ProductPriceLog.objects.create(
-            item_id=item['itemId'],
-            title=item['title'],
-            image_url=item['image']['imageUrl'],
-            price=item['price']['value'],
-            currency=item['price']['currency'],
-            web_url=item['itemWebUrl'],
-            timestamp=event.timestamp
+            item_id=item["itemId"],
+            title=item["title"],
+            image_url=item["image"]["imageUrl"],
+            price=item["price"]["value"],
+            currency=item["price"]["currency"],
+            web_url=item["itemWebUrl"],
+            timestamp=event.timestamp,
         )
         products.append(product)
 
@@ -63,12 +65,12 @@ def _process_alert_created_event_type(event: ConsumedPubSubEvent) -> None:
     :param event: ConsumedPubSubEvent
     """
     ActiveAlert.objects.get_or_create(
-        uid=event.payload['id'],
+        uid=event.payload["id"],
         defaults={
-            'email': event.payload['email'],
-            'keywords': event.payload['keywords'],
-            'frequency': event.payload['frequency'],
-        }
+            "email": event.payload["email"],
+            "keywords": event.payload["keywords"],
+            "frequency": event.payload["frequency"],
+        },
     )
 
 
@@ -88,12 +90,12 @@ def _process_alert_updated_event_type(event: ConsumedPubSubEvent):
     object in such case.
     """
     ActiveAlert.objects.update_or_create(
-        uid=event.payload['id'],
+        uid=event.payload["id"],
         defaults={
-            'email': event.payload['email'],
-            'frequency': event.payload['frequency'],
-            'keywords': event.payload['keywords'],
-        }
+            "email": event.payload["email"],
+            "frequency": event.payload["frequency"],
+            "keywords": event.payload["keywords"],
+        },
     )
 
 
@@ -107,9 +109,9 @@ def _process_alert_deleted_event_type(event: ConsumedPubSubEvent):
     ProductPriceLog objects from the DB. We keep them around for future
     reference and analysis.
     """
-    alert = ActiveAlert.objects.get(uid=event.payload['id'])
+    alert = ActiveAlert.objects.get(uid=event.payload["id"])
     alert.is_active = False
-    alert.save(update_fields=['is_active', 'updated_at'])
+    alert.save(update_fields=["is_active", "updated_at"])
 
 
 @shared_task
@@ -122,7 +124,7 @@ def process(id: int):
     """
     event = ConsumedPubSubEvent.objects.get(id=id)
 
-    logger.info(f'Processing an event from ConsumedPubSubEvent: {event}')
+    logger.info(f"Processing an event from ConsumedPubSubEvent: {event}")
     if event.type == PubSubEventType.NEW_PRODUCTS.value:
         _process_new_products_event_type(event)
     elif event.type == PubSubEventType.ALERT_CREATED.value:
@@ -132,13 +134,13 @@ def process(id: int):
     elif event.type == PubSubEventType.ALERT_DELETED.value:
         _process_alert_deleted_event_type(event)
     else:
-        raise ValueError(f'Unknown PubSubEvent: {event}')
+        raise ValueError(f"Unknown PubSubEvent: {event}")
 
     # Update AlertEvent object
     event.processed = True
-    event.save(update_fields=['processed', 'updated_at'])
+    event.save(update_fields=["processed", "updated_at"])
 
-    logger.info(f'Processing complete for ConsumedPubSubEvent: {event}')
+    logger.info(f"Processing complete for ConsumedPubSubEvent: {event}")
 
 
 @shared_task
@@ -151,9 +153,9 @@ def send_product_insights():
     logger.info(f"Sending product insights to {len(insights)} users: {insights}")
     for insight in insights:
         mails.send_html_mail(
-            to=insight['email'],
-            subject=f'New Product Insights',
+            to=insight["email"],
+            subject="New Product Insights",
             context=insight,
-            template_name='mails/insight.html',
+            template_name="mails/insight.html",
         )
         logger.info(f"Sent product insights to {insight['email']}")

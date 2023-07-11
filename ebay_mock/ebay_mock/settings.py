@@ -26,37 +26,34 @@ SECRET_KEY = "django-insecure-1x^a)b3k429d%$xfy5c75ck)ep&y6da9p6@oc96hf@**f&a^$&
 DEBUG = True
 APPEND_SLASH = False
 
-ALLOWED_HOSTS = ['localhost', 'host.docker.internal']
+ALLOWED_HOSTS = ["localhost", "host.docker.internal"]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
 ]
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Ebay Mock Service',
-    'DESCRIPTION': 'APIs to perform CRUD operations for EBay Buying API',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
+    "TITLE": "Ebay Mock Service",
+    "DESCRIPTION": "APIs to perform CRUD operations for EBay Buying API",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
     # OTHER SETTINGS
-    'SERVERS': [{
-        'url': 'http://localhost:8003/',
-        'description': 'Local server'
-    }],
+    "SERVERS": [{"url": "http://localhost:8003/", "description": "Local server"}],
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 3,
 }
 
 # Email settings for Inbucket (Local)
 # -----------------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = '2500'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "localhost"
+EMAIL_PORT = "2500"
 # TODO: Check if host user and password are required
-EMAIL_HOST_USER = 'your@djangoapp.com'
-EMAIL_HOST_PASSWORD = 'password'
+EMAIL_HOST_USER = "your@djangoapp.com"
+EMAIL_HOST_PASSWORD = "password"
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = False
 
@@ -64,7 +61,6 @@ EMAIL_USE_SSL = False
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
 # EMAIL_PORT = '2525'
-# # TODO: Host user and password are provided in send_mail() function for mailtrap to work
 # EMAIL_HOST_USER = 'be6c3e73d086a1'
 # EMAIL_HOST_PASSWORD = 'e98802c26bf19d'
 # EMAIL_USE_TLS = False
@@ -178,9 +174,9 @@ CELERY_RESULT_BACKEND = REDIS_URL
 # }
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 

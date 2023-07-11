@@ -1,14 +1,14 @@
 # Create your views here.
 
-from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
-from .serializers import AlertSerializer
-from .models import Alert
 import logging
-from .utils.mails import send_html_mail
-from ebay_sdk import client, utils as ebay_utils
-from .utils.pubsub import publish_event
+
+from rest_framework.viewsets import ModelViewSet
+
 from pubsub import PubSubEventType
+
+from .models import Alert
+from .serializers import AlertSerializer
+from .utils.pubsub import publish_event
 
 logger = logging.getLogger(__name__)
 
@@ -30,5 +30,7 @@ class AlertViewSet(ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance_id = self.get_object().id
         response = super().destroy(request, *args, **kwargs)
-        publish_event(event_type=PubSubEventType.ALERT_DELETED, payload={'id': instance_id})
+        publish_event(
+            event_type=PubSubEventType.ALERT_DELETED, payload={"id": instance_id}
+        )
         return response

@@ -15,11 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
 from django.urls import include, path
+
 # from ebay_mock import authenticate
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('identity/', include('authenticate.urls')),
-    path('buy/', include('buy_api.urls')),
+    path("admin/", admin.site.urls),
+    path("identity/", include("authenticate.urls")),
+    path("buy/", include("buy_api.urls")),
 ]

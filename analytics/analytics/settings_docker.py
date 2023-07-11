@@ -10,43 +10,42 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from .settings import *
+import os
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Analytics',
-    'DESCRIPTION': 'APIs to perform CRUD operations for Analytics',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
-    'SERVERS': [{
-        'url': 'http://localhost:8001/',
-        'description': 'Local server'
-    }],
+    "TITLE": "Analytics",
+    "DESCRIPTION": "APIs to perform CRUD operations for Analytics",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SERVERS": [{"url": "http://localhost:8001/", "description": "Local server"}],
 }
 
 
 ALLOWED_HOSTS = []
 CORS_ALLOWED_ORIGINS = [
-    f"http://localhost:8081",
+    "http://localhost:8081",
 ]
 
 
 # Email settings for Mailtrap (Local)
-EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'sandbox.smtp.mailtrap.io')
-EMAIL_PORT = os.environ.get('EMAIL_PORT', '2525')
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', "False") == "True"
-EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', "False") == "True"
+EMAIL_BACKEND = os.environ.get(
+    "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"
+)
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "sandbox.smtp.mailtrap.io")
+EMAIL_PORT = os.environ.get("EMAIL_PORT", "2525")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "False") == "True"
+EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", "False") == "True"
 
 
 # Redis
-REDIS_HOST = os.environ.get('REDIS_HOST')
-REDIS_PORT = os.environ.get('REDIS_PORT')
+REDIS_HOST = os.environ.get("REDIS_HOST")
+REDIS_PORT = os.environ.get("REDIS_PORT")
 REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
 
 CACHES = {
@@ -54,7 +53,7 @@ CACHES = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": REDIS_URL,
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
-        "KEY_PREFIX": "ANALYTICS"
+        "KEY_PREFIX": "ANALYTICS",
     }
 }
 
@@ -65,11 +64,11 @@ CELERY_RESULT_BACKEND = REDIS_URL
 
 
 # Database
-POSTGRES_HOST = os.environ.get('POSTGRES_HOST')
-POSTGRES_PORT = os.environ.get('POSTGRES_PORT')
-POSTGRES_DB = os.environ.get('POSTGRES_DB')
-POSTGRES_USER = os.environ.get('POSTGRES_USER')
-POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
+POSTGRES_HOST = os.environ.get("POSTGRES_HOST")
+POSTGRES_PORT = os.environ.get("POSTGRES_PORT")
+POSTGRES_DB = os.environ.get("POSTGRES_DB")
+POSTGRES_USER = os.environ.get("POSTGRES_USER")
+POSTGRES_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
 
 DATABASES = {
     "default": {
@@ -84,7 +83,7 @@ DATABASES = {
 
 
 # PubSub
-PUBSUB_HOST = os.environ.get('PUBSUB_HOST', 'localhost')
-PUBSUB_PORT = os.environ.get('PUBSUB_PORT', 6379)
-PUBSUB_CHANNEL = os.environ.get('PUBSUB_CHANNEL', 'ebay-alerts')
-PUBSUB_DEFAULT_DB = os.environ.get('PUBSUB_DEFAULT_DB', 0)
+PUBSUB_HOST = os.environ.get("PUBSUB_HOST", "localhost")
+PUBSUB_PORT = os.environ.get("PUBSUB_PORT", 6379)
+PUBSUB_CHANNEL = os.environ.get("PUBSUB_CHANNEL", "ebay-alerts")
+PUBSUB_DEFAULT_DB = os.environ.get("PUBSUB_DEFAULT_DB", 0)

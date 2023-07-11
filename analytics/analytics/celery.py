@@ -1,11 +1,12 @@
 import os  # isort:skip
 import logging  # isort:skip
-from django.conf import settings  # isort:skip
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "analytics.settings_docker")  # isort:skip
+os.environ.setdefault(
+    "DJANGO_SETTINGS_MODULE", "analytics.settings_docker"
+)  # isort:skip
 
-import celery
-from celery.schedules import crontab
+import celery  # noqa: E402
+from celery.schedules import crontab  # noqa: E402
 
 logger = logging.getLogger(__name__)
 

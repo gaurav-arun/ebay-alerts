@@ -1,6 +1,5 @@
 import html2text
 from django.conf import settings
-
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
@@ -26,7 +25,8 @@ def send_html_mail(
     context: dict
         Dictionary containing values to plug into the template
     from_email: str
-        String, containing email address on behalf of whom this email is sent. Provided by default in settings.
+        String, containing email address on behalf of whom this email is sent.
+        Provided as DEFAULT_FROM_EMAIL in settings.
     """
 
     # Convert to list if not already

@@ -86,7 +86,7 @@ const TableComponent = () => {
   )
 
     // const [tableData, setTableData] = useState([]);
-  
+
     // // Fetch data from the API
     // useEffect(() => {
     //   axios.get('http://localhost:8000/alert/')
