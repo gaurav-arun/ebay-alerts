@@ -9,7 +9,7 @@ class BuyApi:
 
     @classmethod
     def find_items_by_keyword(cls, keyword: str, offset: int = 0, limit: int = 20, sort_by: str | None = None, marketplace_id: str = 'EBAY_US', refresh_token=False) -> dict:
-        auth_token = Auth.get_token(ebay_constants.API_CLIENT_CACHE_KEY_MAP['find_items_by_keyword'], refresh_token=refresh_token)
+        auth_token = Auth.get_token(ebay_constants.API_CLIENT_CACHE_KEY_MAP['find_items_by_keyword'], force_token_refresh=refresh_token)
 
         headers = {
             'Authorization': f'Bearer {auth_token}',
