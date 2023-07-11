@@ -2,7 +2,8 @@ import logging
 
 from celery import shared_task
 from .utils import mails
-from ebay_sdk import client
+from ebay_sdk import client, utils as ebay_utils, models as ebay_models
+from pubsub import PubSubEventType
 
 from .models import Alert
 from .utils import pubsub as pubsub_utils
@@ -19,7 +20,7 @@ def send_alert(frequency: int):
         keywords: str = alert.keywords
         response: dict = client.BuyApi.find_items_by_keyword(keyword=keywords)
 
-        # items: list[ebay_models.ItemSummary] = ebay_utils.parse_response(response)
+        items: list[ebay_models.ItemSummary] = ebay_utils.parse_response(response)
         # mails.send_html_mail(
         #     to=alert.email,
         #     subject=f'Alert for {keywords}',
@@ -36,4 +37,4 @@ def send_alert(frequency: int):
             'frequency': alert.frequency,
             'items': response
         }
-        pubsub_utils.publish_event(type='alert.new_products', payload=payload)
+        pubsub_utils.publish_event(event_type=PubSubEventType.NEW_PRODUCTS, payload=payload)

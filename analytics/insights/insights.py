@@ -1,4 +1,4 @@
-from .models import Alert, Product, PersistedEvent
+from .models import Alert, ProductPriceLog, PubSubEventStore
 from django.db.models import Q, Max, Min, Avg, F
 from datetime import datetime, timedelta
 
@@ -7,7 +7,7 @@ def gather_price_change_insight(product_ids, average_price_by_product_id, lookba
     """Gathers insights about the percentage price change from the
        average price of products over specified lookback days.
     """
-    products = Product.objects.filter(item_id__in=product_ids)
+    products = ProductPriceLog.objects.filter(item_id__in=product_ids)
     products_by_percentage_change_in_price = []
     for product in products:
         current_price = product.price
@@ -55,7 +55,7 @@ def generate_insights(lookback_days=3) -> list[dict]:
         start_date = end_date - timedelta(weeks=2)
 
         # Perform the query, group by item_id, and calculate the average price for each product
-        average_prices = Product.objects.filter(timestamp__range=(start_date, end_date)).values('item_id').annotate(average_price=Avg('price'))
+        average_prices = ProductPriceLog.objects.filter(timestamp__range=(start_date, end_date)).values('item_id').annotate(average_price=Avg('price'))
         average_price_by_product_id = {average_price['item_id']: average_price['average_price'] for average_price in average_prices}
 
         price_change_insight = gather_price_change_insight(product_ids, average_price_by_product_id)

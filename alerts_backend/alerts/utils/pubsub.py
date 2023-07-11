@@ -1,14 +1,16 @@
-from pubsub import RedisProducer, Event
+from pubsub import RedisProducer, PubSubEvent, PubSubEventType
 from django.conf import settings
 import logging
+
 
 logger = logging.getLogger(__name__)
 
 
-def publish_event(type: str, payload: dict) -> None:
-    """Publishes an event to the pubsub channel"
+def publish_event(event_type: PubSubEventType, payload: dict) -> None:
+    """
+    Publishes an event to the pubsub channel
 
-    :param type: str ['alert.created', 'alert.updated', 'alert.deleted', 'alert.new_products']
+    :param event_type: EventType
     :param payload: dict
     """
     try:
@@ -18,7 +20,7 @@ def publish_event(type: str, payload: dict) -> None:
             port=settings.PUBSUB_PORT,
             db=settings.PUBSUB_DEFAULT_DB
         )
-        event = Event(type=type, payload=payload)
+        event = PubSubEvent(type=event_type, payload=payload)
         producer.produce(event=event)
         logger.info(f'Published event for alert: [{event.type}]: [{event.payload["id"]}]')
     except Exception as e:
