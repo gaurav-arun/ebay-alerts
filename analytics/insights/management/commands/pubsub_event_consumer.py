@@ -3,7 +3,8 @@ from pubsub import RedisConsumer, PubSubEvent
 from django.conf import settings
 import logging
 from insights import tasks as insight_tasks
-from insights.models import PubSubEventStore
+from insights.models import ConsumedPubSubEvent
+from pubsub import PubSubEvent
 
 
 logger = logging.getLogger(__name__)
@@ -13,22 +14,24 @@ class Command(BaseCommand):
     help = 'Starts the event consumer process'
 
     @staticmethod
-    def process(event: PubSubEvent):
+    def process(pubsub_event: PubSubEvent):
         """
-        Initiates the processing of the consumed event by
-        persisting in the DB first the invoking the celery task
-        :param event: PubSubEvent
+        Initiates the processing of the consumed event by first
+        persisting it in the DB, and then invoking the celery task
+        that processes the event.
+
+        :param pubsub_event: PubSubEvent
         :return:None
         """
-        stored_event = PubSubEventStore.objects.create(
-            type=event.type,
-            payload=event.payload,
-            timestamp=event.timestamp,
+        consumed_event = ConsumedPubSubEvent.objects.create(
+            type=pubsub_event.type,
+            payload=pubsub_event.payload,
+            timestamp=pubsub_event.timestamp,
             processed=False
         )
 
         # Invoke celery task that processes the event
-        insight_tasks.process_event.delay(id=stored_event.id)
+        insight_tasks.process.delay(id=consumed_event.id)
 
     def handle(self, *args, **options):
         """
@@ -45,7 +48,7 @@ class Command(BaseCommand):
         for pubsub_event in consumer.consume():
             # Generic exception handling to avoid crashing the consumer!
             try:
-                logger.info(f'Received PubSubEvent : [{pubsub_event}]')
+                logger.info(f'ConsumedPubSubEvent : [{pubsub_event}]')
                 self.process(pubsub_event)
             except Exception as error:
-                logger.error(f'Error processing PubSubEvent: {error} : {pubsub_event}')
+                logger.error(f'Error processing ConsumedPubSubEvent: {error} : {pubsub_event}')

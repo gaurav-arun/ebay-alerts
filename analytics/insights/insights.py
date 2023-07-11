@@ -1,4 +1,4 @@
-from .models import ActiveAlert, ProductPriceLog, PubSubEventStore
+from .models import ActiveAlert, ProductPriceLog, ConsumedPubSubEvent
 from django.db.models import Q, Max, Min, Avg, F
 from datetime import datetime, timedelta
 

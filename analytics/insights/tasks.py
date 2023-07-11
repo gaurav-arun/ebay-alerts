@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 
 from celery import shared_task
-from .models import ActiveAlert, PubSubEventStore, ProductPriceLog
+from .models import ActiveAlert, ConsumedPubSubEvent, ProductPriceLog
 from django.db import transaction
 from .insights import generate_insights
 from .utils import mails
@@ -12,15 +12,14 @@ from pubsub import PubSubEventType
 logger = logging.getLogger(__name__)
 
 
-def _process_new_products_event_type(event: PubSubEventStore) -> None:
+def _process_new_products_event_type(event: ConsumedPubSubEvent) -> None:
     """
     Process events of type `PubSubEventType.NEW_PRODUCTS`
 
-    The idea is to track the alert configuration as well as the products
-    that were returned by the API call. We keep track of the most recent
-    products for each alert configuration.
+    The idea is to track new/existing alerts as well as the products associated
+    with the alert.
 
-    :param event: PubSubEvent
+    :param event: ConsumedPubSubEvent
     """
     alert, _ = ActiveAlert.objects.get_or_create(
         uid=event.payload['id'],
@@ -32,7 +31,7 @@ def _process_new_products_event_type(event: PubSubEventStore) -> None:
     )
 
     # Create Product objects from event payload
-    products = []
+    products: list[ProductPriceLog] = []
     for item in event.payload['items']['itemSummaries']:
         product = ProductPriceLog.objects.create(
             item_id=item['itemId'],
@@ -49,13 +48,21 @@ def _process_new_products_event_type(event: PubSubEventStore) -> None:
     alert.tracked_products.set(products)
 
 
-def _process_alert_created_event_type(event: PubSubEventStore) -> None:
+def _process_alert_created_event_type(event: ConsumedPubSubEvent) -> None:
     """
-    Process stored PubSubEvent of type PubSubEventType.ALERT_CREATED
+    Process `ConsumedPubSubEvent` of `PubSubEventType.ALERT_CREATED`
 
-    In this case we just create a new Alert object.
+    In this case we just create a new ActiveAlert. The `ActiveAlert` object
+    will be used to track an alert and the products associated with the alert.
+    It will also be used to send insights email to the user.
+
+    NOTE: We do get_or_create because it is possible that we get multiple events
+    for an alert with the same keywords and email address. In this case we don't
+    want to create a new ActiveAlert object. We want to use the existing one.
+
+    :param event: ConsumedPubSubEvent
     """
-    alert, _ = ActiveAlert.objects.get_or_create(
+    ActiveAlert.objects.get_or_create(
         uid=event.payload['id'],
         defaults={
             'email': event.payload['email'],
@@ -65,42 +72,55 @@ def _process_alert_created_event_type(event: PubSubEventStore) -> None:
     )
 
 
-def _process_alert_updated_event_type(event: PubSubEventStore):
+def _process_alert_updated_event_type(event: ConsumedPubSubEvent):
     """
-    Process persisted events of type `alert.updated`
+    Process `ConsumedPubSubEvent` of `PubSubEventType.ALERT_UPDATED
 
-    In this case we update the Alert object with the data from the
-    event payload.
+    In this case we update or create an ActiveAlert object with the new values.
+    It could be the case that the user has updated the alert with new keywords
+    or a new email address. We need to update the ActiveAlert object with the
+    new values to reflect the changes and to be able to send the email to the
+    correct email address.
+
+    NOTE: We are creating a new ActiveAlert object if it doesn't exist in the
+    DB because it is possible that on or more events reach the consumer before the
+    `PubSubEventType.ALERT_CREATED` event. So we need to create a new ActiveAlert
+    object in such case.
     """
-    alert = ActiveAlert.objects.get(
-        uid=event.payload['id']
+    ActiveAlert.objects.update_or_create(
+        uid=event.payload['id'],
+        defaults={
+            'email': event.payload['email'],
+            'frequency': event.payload['frequency'],
+            'keywords': event.payload['keywords'],
+        }
     )
-    alert.email = event.payload['email']
-    alert.frequency = event.payload['frequency']
-    alert.keywords = event.payload['keywords']
-    alert.save()
 
 
-def _process_alert_deleted_event_type(event: PubSubEventStore):
+def _process_alert_deleted_event_type(event: ConsumedPubSubEvent):
     """Process persisted events of type `alert.deleted`
 
-    In this case we delete the Alert object and the related many-to-many mapping
-    with the Product objects. However, Product objects are not deleted. This is
-    because we want to keep track of the product prices over time.
+    In this case we simply set ActiveAlert object as inactive in the DB.
+    It could be the case that the user has unsubscribed from the Alert.
+    So we need to deactivate the ActiveAlert object so that we don't send
+    any emails to the user. Note that we don't delete the associated
+    ProductPriceLog objects from the DB. We keep them around for future
+    reference and analysis.
     """
-    ActiveAlert.objects.get(uid=event.payload['id']).delete()
+    alert = ActiveAlert.objects.get(uid=event.payload['id'])
+    alert.is_active = False
+    alert.save(update_fields=['is_active', 'updated_at'])
 
 
 @shared_task
 @transaction.atomic
-def process_event(id: int):
+def process(id: int):
     """
-    Process an event from the PubSubEventStore.
-    Entire processing happens within an atomic transaction.
+    Process an event stored in ConsumedPubSubEvent.
 
     :param id: ID of the PubSubEventStore object
     """
-    event = PubSubEventStore.objects.get(id=id)
+    event = ConsumedPubSubEvent.objects.get(id=id)
 
     logger.info(f'Processing an event from PubSubEventStore: {event}')
     if event.type == PubSubEventType.NEW_PRODUCTS:

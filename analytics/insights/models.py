@@ -10,7 +10,7 @@ class TimestampedModel(models.Model):
         abstract = True
 
 
-class PubSubEventStore(TimestampedModel):
+class ConsumedPubSubEvent(TimestampedModel):
     type = models.CharField(max_length=255, choices=PubSubEventType.choices())
     payload = models.JSONField()
     timestamp = models.DateTimeField(null=True, blank=True)
@@ -38,6 +38,7 @@ class ActiveAlert(TimestampedModel):
     email = models.EmailField(max_length=128, db_index=True)
     keywords = models.TextField(null=False, blank=False)
     frequency = models.IntegerField(null=False)
+    is_active = models.BooleanField(default=True)
     tracked_products = models.ManyToManyField(ProductPriceLog, blank=True)
 
     def __str__(self):
