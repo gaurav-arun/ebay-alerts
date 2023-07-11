@@ -146,12 +146,14 @@ def send_product_insights():
     """
     Send product insights to the users with active alerts
     """
-    insights: list[dict] = generate_insights()
+    insights: list[dict] = generate_insights(lookback_days=14)
+
+    logger.info(f"Sending product insights to {len(insights)} users: {insights}")
     for insight in insights:
-        # mails.send_html_mail(
-        #     to=insight['email'],
-        #     subject=f'New Product Insights',
-        #     context=insight,
-        #     template_name='mails/insight.html',
-        # )
+        mails.send_html_mail(
+            to=insight['email'],
+            subject=f'New Product Insights',
+            context=insight,
+            template_name='mails/insight.html',
+        )
         logger.info(f"Sent product insights to {insight['email']}")

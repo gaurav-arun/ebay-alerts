@@ -39,12 +39,12 @@ def send_alert(frequency: int) -> None:
 
         # Send email to the user
         items: list[ebay_models.ItemSummary] = ebay_utils.parse_response(response)
-        mails.send_html_mail(
-            to=alert.email,
-            subject=f'Alert for {keywords}',
-            context={'items': items, 'keywords': keywords},
-            template_name='mails/alert.html',
-        )
+        # mails.send_html_mail(
+        #     to=alert.email,
+        #     subject=f'Alert for {keywords}',
+        #     context={'items': items, 'keywords': keywords},
+        #     template_name='mails/alert.html',
+        # )
         logger.info(f"Sent email for alert - {alert}")
 
 
