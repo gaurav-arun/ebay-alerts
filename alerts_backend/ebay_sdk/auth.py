@@ -13,8 +13,8 @@ class Auth:
         cache.set(key=key, value=value, timeout=timeout)
 
     @classmethod
-    def get_token(cls, api_key: str, refresh_token=False) -> str:
-        if refresh_token:
+    def get_token(cls, api_key: str, force_token_refresh=False) -> str:
+        if force_token_refresh:
             cache.delete(api_key)
 
         token = cache.get(api_key)
