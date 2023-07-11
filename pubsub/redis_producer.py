@@ -1,6 +1,6 @@
 from .producer import Producer
 import redis
-from .event import Event
+from .pubsubevent import PubSubEvent
 import json
 
 
@@ -9,7 +9,7 @@ class RedisProducer(Producer):
         self.channel = channel
         self.redis_client = redis.StrictRedis(host=host, port=port, db=db)
 
-    def produce(self, event: Event) -> None:
+    def produce(self, event: PubSubEvent) -> None:
         self.redis_client.publish(self.channel, event.to_json())
 
     def close(self):

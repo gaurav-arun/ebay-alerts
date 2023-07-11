@@ -1,6 +1,7 @@
 from .consumer import Consumer
 import redis
-from .event import Event
+from .pubsubevent import PubSubEvent
+from collections.abc import Generator
 
 
 class RedisConsumer(Consumer):
@@ -10,7 +11,7 @@ class RedisConsumer(Consumer):
         self.pubsub = self.redis_client.pubsub(ignore_subscribe_messages=True)
         self.pubsub.subscribe(self.channel)
 
-    def consume(self) -> Event:
+    def consume(self) -> Generator[PubSubEvent, None, None]:
         # TODO: Add sample message
         # TODO: Add exception handling
         # TODO: Add logging
@@ -18,7 +19,7 @@ class RedisConsumer(Consumer):
         # TODO: Add docstrings
         for message in self.pubsub.listen():
             if message['type'] == 'message':
-                yield Event.from_json(message['data'])
+                yield PubSubEvent.from_json(message['data'])
 
     def close(self):
         self.pubsub.close()
