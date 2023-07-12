@@ -120,9 +120,13 @@ def process(id: int):
     """
     Process an event stored in ConsumedPubSubEvent.
 
+    NOTE: This task is idempotent. It will not process the same event twice.
+    Entire processing is wrapped in a transaction. So if any exception occurs
+    during processing, the entire transaction will be rolled back.
+
     :param id: ID of the PubSubEventStore object
     """
-    event = ConsumedPubSubEvent.objects.get(id=id)
+    event = ConsumedPubSubEvent.objects.get(id=id, processed=False)
 
     logger.info(f"Processing a ConsumedPubSubEvent: {event}")
     if event.type == PubSubEventType.NEW_PRODUCTS.value:
@@ -144,11 +148,11 @@ def process(id: int):
 
 
 @shared_task
-def send_product_insights():
+def send_product_insights(lookback_days: int = 14):
     """
     Send product insights to the users with active alerts
     """
-    insights: list[dict] = generate_insights(lookback_days=14)
+    insights: list[dict] = generate_insights(lookback_days=lookback_days)
 
     logger.info(f"Sending product insights to {len(insights)} users: {insights}")
     for insight in insights:
