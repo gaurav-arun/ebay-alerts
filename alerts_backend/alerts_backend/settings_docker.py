@@ -27,7 +27,7 @@ SPECTACULAR_SETTINGS = {
 }
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["host.docker.internal", "localhost"]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",  # Swagger UI
     "http://localhost:3000",  # Alert Frontend
