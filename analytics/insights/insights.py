@@ -1,10 +1,13 @@
 import datetime
 import decimal
+import logging
 import random
 
 from django.db.models import Avg, QuerySet
 
 from .models import ActiveAlert, ProductPriceLog
+
+logger = logging.getLogger(__name__)
 
 
 def gather_price_change_insight(
@@ -12,7 +15,7 @@ def gather_price_change_insight(
     average_price_by_product_id: dict,
     lookback_days: int,
     alert: ActiveAlert,
-) -> dict:
+) -> dict | None:
     """
     Gathers insights about the percentage price change from the
     average price of products over the specified lookback days.
@@ -20,7 +23,7 @@ def gather_price_change_insight(
     :param tracked_products: QuerySet of ProductPriceLog objects
     :param average_price_by_product_id: dict of product id to average price
     :param lookback_days: number of days to look back for price changes
-    :alert: ActiveAlert instance to extract user email
+    :param alert: ActiveAlert instance to extract user email
     """
     # Calculate percentage change in price from average price
     products_by_percentage_change_in_price = []
@@ -39,8 +42,18 @@ def gather_price_change_insight(
             )
 
     # Pick a random product from the list
-    random_index = random.randint(0, len(products_by_percentage_change_in_price) - 1)
+    try:
+        random_index = random.randint(
+            0, len(products_by_percentage_change_in_price) - 1
+        )
+    except ValueError:
+        logger.info(
+            f"Not enough products found for price change insight for alert {alert}"
+        )
+        return None
+
     product_chosen_for_insight = products_by_percentage_change_in_price[random_index]
+
     percentage_change_in_price = round(
         product_chosen_for_insight["percentage_change_in_price"]
     )
@@ -100,9 +113,10 @@ def generate_insights(lookback_days=14) -> list[dict]:
             product["item_id"]: product["average_price"]
             for product in average_price_of_tracked_products
         }
-        price_change_insight: dict = gather_price_change_insight(
+        price_change_insight: dict | None = gather_price_change_insight(
             tracked_products, average_price_by_product_id, lookback_days, alert
         )
-        insights.append(price_change_insight)
+        if price_change_insight:
+            insights.append(price_change_insight)
 
     return insights
