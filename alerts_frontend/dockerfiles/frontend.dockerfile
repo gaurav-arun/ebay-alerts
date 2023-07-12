@@ -6,7 +6,7 @@ COPY alerts_frontend/package.json .
 
 RUN npm install
 
-COPY .. .
+COPY alerts_frontend .
 
 EXPOSE 3000
 
