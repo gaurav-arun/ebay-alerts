@@ -7,9 +7,6 @@ echo "Applying database migrations..."
 python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 
-echo "Generating swagger schema..."
-python manage.py spectacular --color --file schema.yml
-
 echo "All Done!!"
 
 # Relay control back to the CMD
