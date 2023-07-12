@@ -2,11 +2,11 @@ version: '3.8'
 
 services:
 
-  alerts:
+  alerts_backend:
     build:
       context: .
       dockerfile: alerts_backend/dockerfiles/server.dockerfile
-    container_name: alerts
+    container_name: alerts_backend
     volumes:
     - ./alerts_backend:/app
     - ./pubsub:/app/pubsub
@@ -28,14 +28,12 @@ services:
     environment:
     - DJANGO_SETTINGS_MODULE=alerts_backend.settings_docker
     depends_on:
-#      - smtp_server
     - alerts_redis
     - alerts_postgres
+    - pubsub_redis
 
   alerts_redis:
     image: redis:7.0.11-alpine
-    ports:
-    - 6379:6379
     container_name: alerts_redis
 
   alerts_postgres:
@@ -43,17 +41,20 @@ services:
       context: .
       dockerfile: alerts_backend/dockerfiles/postgres.dockerfile
     container_name: alerts_postgres
-    ports:
-    - 5432:5432
     env_file:
     - alerts_backend/dockerfiles/env/postgres.env
 
-#  smtp_server:
-#    image: "inbucket/inbucket:stable"
-#    container_name: smtp_server
-#    ports:
-#      - '2500:2500'
-#      - '9000:9000'
+  alerts_frontend:
+    build:
+      context: .
+      dockerfile: alerts_frontend/dockerfiles/frontend.dockerfile
+    container_name: alerts_frontend
+    volumes:
+    - ./alerts_frontend:/app
+    ports:
+    - 3000:3000
+    depends_on:
+    - alerts_backend
 
   alerts_swagger_ui:
     image: swaggerapi/swagger-ui
@@ -64,21 +65,8 @@ services:
     - SWAGGER_JSON=/schema.yml
     volumes:
     - ./alerts_backend/schema.yml:/schema.yml
-
-#  analytics_backend:
-#    build:
-#      context: .
-#      dockerfile: analytics/dockerfiles/server.dockerfile
-#    container_name: analytics_backend
-#    volumes:
-#      - ./analytics:/app
-#      - ./pubsub:/app/pubsub
-#    environment:
-#      - DJANGO_SETTINGS_MODULE=analytics.settings_docker
-#    ports:
-#      - '8001:8001'
-#    depends_on:
-#      - analytics_celery
+    depends_on:
+    - alerts_backend
 
   analytics_celery:
     build:
@@ -91,14 +79,12 @@ services:
     environment:
     - DJANGO_SETTINGS_MODULE=analytics.settings_docker
     depends_on:
-    - smtp_server
     - analytics_redis
     - analytics_postgres
+    - pubsub_redis
 
   analytics_redis:
     image: redis:7.0.11-alpine
-    ports:
-    - 6380:6379
     container_name: analytics_redis
 
   analytics_postgres:
@@ -106,23 +92,9 @@ services:
       context: .
       dockerfile: analytics/dockerfiles/postgres.dockerfile
     container_name: analytics_postgres
-    ports:
-    - 5433:5432
     env_file:
     - analytics/dockerfiles/env/postgres.env
 
-  analytics_swagger_ui:
-    image: swaggerapi/swagger-ui
-    container_name: analytics_swagger_ui
-    ports:
-    - 8081:8080
-    environment:
-    - SWAGGER_JSON=/schema.yml
-    volumes:
-    - ./analytics/schema.yml:/schema.yml
-
   pubsub_redis:
     image: redis:7.0.11-alpine
-    ports:
-    - 6381:6379
     container_name: pubsub_redis
