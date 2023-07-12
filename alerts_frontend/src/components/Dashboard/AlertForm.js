@@ -114,7 +114,7 @@ const AlertForm = ({ title, buttonLabel, alerts, setAlerts, setIsEditing, setIsA
           <label htmlFor="frequency">Frequency (in minutes)</label>
           <select value={frequency} onChange={(e) => setFrequency(e.target.value)}>
             <option value="2" selected>2</option>
-            <option value="5">5</option>
+            <option value="10">10</option>
             <option value="30">30</option>
           </select>
         </div>
