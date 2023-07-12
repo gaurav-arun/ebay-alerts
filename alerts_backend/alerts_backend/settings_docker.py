@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-import os
+import os  # noqa: E402
+
+from .settings import *  # noqa: E402, F403
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
