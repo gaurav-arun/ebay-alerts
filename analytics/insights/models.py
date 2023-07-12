@@ -36,12 +36,12 @@ class ProductPriceLog(models.Model):
     """
 
     item_id = models.CharField(max_length=255, db_index=True)
-    title = models.CharField(max_length=1024)
+    title = models.TextField(null=False, blank=False)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     currency = models.CharField(max_length=3)
     timestamp = models.DateTimeField(blank=False, null=False)
-    image_url = models.URLField(max_length=255, null=True, blank=True)
-    web_url = models.URLField(max_length=255, null=True, blank=True)
+    image_url = models.URLField(max_length=2048, null=True, blank=True)
+    web_url = models.URLField(max_length=2048, null=True, blank=True)
 
     def __str__(self):
         return (
