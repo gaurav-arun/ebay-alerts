@@ -19,7 +19,8 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     "product_insights": {
         "task": "insights.tasks.send_product_insights",
-        # TODO: Change to day after testing
+        # TODO: Change the crontab frequency to `day` after testing
         "schedule": crontab(minute="*/2"),
+        "kwargs": {"lookback_days": 14},
     },
 }
