@@ -158,7 +158,7 @@ def send_product_insights(lookback_days: int = 14):
     for insight in insights:
         mails.send_html_mail(
             to=insight["email"],
-            subject="New Product Insights",
+            subject="New Product Insight",
             context=insight,
             template_name="mails/insight.html",
         )
