@@ -26,10 +26,10 @@ SECRET_KEY = "django-insecure-1x^a)b3k429d%$xfy5c75ck)ep&y6da9p6@oc96hf@**f&a^$&
 DEBUG = True
 APPEND_SLASH = False
 
-ALLOWED_HOSTS = ["localhost", "host.docker.internal"]
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-]
+ALLOWED_HOSTS = ["localhost", "host.docker.internal", "ebaymock"]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8080",
+# ]
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Ebay Mock Service",
@@ -46,29 +46,8 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 3,
 }
 
-# Email settings for Inbucket (Local)
-# -----------------------------------
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "localhost"
-EMAIL_PORT = "2500"
-# TODO: Check if host user and password are required
-EMAIL_HOST_USER = "your@djangoapp.com"
-EMAIL_HOST_PASSWORD = "password"
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = False
-
-# # # Email settings for Mailtrap (Local)
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-# EMAIL_PORT = '2525'
-# EMAIL_HOST_USER = 'be6c3e73d086a1'
-# EMAIL_HOST_PASSWORD = 'e98802c26bf19d'
-# EMAIL_USE_TLS = False
-# EMAIL_USE_SSL = False
-
 
 # Application definition
-
 INSTALLED_APPS = [
     "authenticate.apps.AuthenticateConfig",
     "buy_api.apps.BuyApiConfig",
@@ -81,8 +60,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "corsheaders",
-    "drf_spectacular",
-    # "django_extensions",
 ]
 
 MIDDLEWARE = [
@@ -114,64 +91,12 @@ TEMPLATES = [
     },
 ]
 
-# TEMPLATES = [
-#     {
-#         "BACKEND": "django.template.backends.django.DjangoTemplates",
-#         "DIRS": [str(BASE_DIR / "templates")],
-#         "APP_DIRS": True,
-#         "OPTIONS": {
-#             "context_processors": [
-#                 "django.template.context_processors.debug",
-#                 "django.template.context_processors.request",
-#                 "django.contrib.auth.context_processors.auth",
-#                 "django.contrib.messages.context_processors.messages",
-#             ]
-#         },
-#     }
-# ]
-
 WSGI_APPLICATION = "ebay_mock.wsgi.application"
 
 DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-# Store file in "/tmp"
-# MEDIA_ROOT = tempfile.gettempdir()
+
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = ""
-
-# LOCALHOST = "host.docker.internal"
-# REDIS_HOST = "redis"
-# POSTGRES_HOST = "postgres"
-POSTGRES_HOST = "localhost"
-REDIS_HOST = "localhost"
-
-# Redis
-REDIS_URL = f"redis://{REDIS_HOST}:6381"
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django_redis.cache.RedisCache",
-#         "LOCATION": REDIS_URL,
-#         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
-#         "KEY_PREFIX": "DOC",
-#     }
-# }
-
-# Celery
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "ebay_mock",
-#         "USER": "ebay_mock",
-#         "PASSWORD": "ebay_mock",
-#         "HOST": f"{POSTGRES_HOST}",
-#         "PORT": "5434",
-#     }
-# }
 
 DATABASES = {
     "default": {
