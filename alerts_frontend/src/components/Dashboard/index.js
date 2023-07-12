@@ -6,12 +6,11 @@ import Table from './Table';
 import Add from './Add';
 import Edit from './Edit';
 
-import { alertsData } from '../../data';
 import * as alertsService from '../../services';
 
 
 const Dashboard = () => {
-  const [alerts, setAlerts] = useState(alertsData);
+  const [alerts, setAlerts] = useState([]);
   const [alertsCount, setAlertsCount] = useState(0);
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
