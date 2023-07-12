@@ -10,6 +10,8 @@ services:
     volumes:
     - ./alerts_backend:/app
     - ./pubsub:/app/pubsub
+    env_file:
+    - alerts_backend/.env.docker
     environment:
     - DJANGO_SETTINGS_MODULE=alerts_backend.settings_docker
     ports:
@@ -25,8 +27,13 @@ services:
     volumes:
     - ./alerts_backend:/app
     - ./pubsub:/app/pubsub
+    env_file:
+    - alerts_backend/.env
     environment:
     - DJANGO_SETTINGS_MODULE=alerts_backend.settings_docker
+    - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+    - EBAY_API_ENV=mock
+
     depends_on:
     - alerts_redis
     - alerts_postgres
@@ -76,8 +83,11 @@ services:
     volumes:
     - ./analytics:/app
     - ./pubsub:/app/pubsub
+    env_file:
+    - analytics/.env.docker
     environment:
     - DJANGO_SETTINGS_MODULE=analytics.settings_docker
+    - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
     depends_on:
     - analytics_redis
     - analytics_postgres
@@ -99,7 +109,7 @@ services:
     image: redis:7.0.11-alpine
     container_name: pubsub_redis
 
-  ebaymock:
+  ebay_mock:
     build:
       context: .
       dockerfile: ebay_mock/dockerfiles/server.dockerfile
