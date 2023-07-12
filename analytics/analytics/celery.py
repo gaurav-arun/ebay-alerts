@@ -20,7 +20,7 @@ app.conf.beat_schedule = {
     "product_insights": {
         "task": "insights.tasks.send_product_insights",
         # TODO: Change the crontab frequency to `day` after testing
-        "schedule": crontab(minute="*/2"),
+        "schedule": crontab(minute="*/30"),
         "kwargs": {"lookback_days": 14},
     },
 }
