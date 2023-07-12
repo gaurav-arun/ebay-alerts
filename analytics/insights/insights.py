@@ -26,12 +26,14 @@ def gather_price_change_insight(
     :param alert: ActiveAlert instance to extract user email
     """
     # Calculate percentage change in price from average price
-    products_by_percentage_change_in_price = []
+    products_by_percentage_change_in_price: list[dict] = []
     for product in tracked_products:
-        current_price = product.price
-        average_price = average_price_by_product_id.get(product.item_id)
+        current_price: decimal.Decimal = product.price
+        average_price: decimal.Decimal = average_price_by_product_id.get(
+            product.item_id
+        )
         if average_price:
-            percentage_change_in_price_from_avg = (
+            percentage_change_in_price_from_avg: decimal.Decimal = (
                 (current_price - average_price) / average_price
             ) * 100
             products_by_percentage_change_in_price.append(
@@ -43,7 +45,7 @@ def gather_price_change_insight(
 
     # Pick a random product from the list
     try:
-        random_index = random.randint(
+        random_index: int = random.randint(
             0, len(products_by_percentage_change_in_price) - 1
         )
     except ValueError:
@@ -52,18 +54,19 @@ def gather_price_change_insight(
         )
         return None
 
-    product_chosen_for_insight = products_by_percentage_change_in_price[random_index]
-
+    product_chosen_for_insight: dict = products_by_percentage_change_in_price[
+        random_index
+    ]
     percentage_change_in_price = round(
         product_chosen_for_insight["percentage_change_in_price"]
     )
-    if product_chosen_for_insight["percentage_change_in_price"] > 0:
+    if percentage_change_in_price > 0:
         insight = (
             f"Product {product_chosen_for_insight['product'].title} "
             f"has had a increase in price by {percentage_change_in_price}% "
             f"in the last {lookback_days} days."
         )
-    elif product_chosen_for_insight["percentage_change_in_price"] < 0:
+    elif percentage_change_in_price < 0:
         insight = (
             f"Product {product_chosen_for_insight['product'].title} "
             f"has had a {abs(percentage_change_in_price)}% decrease "
@@ -75,7 +78,7 @@ def gather_price_change_insight(
             f" last {lookback_days} days, act now before price changes."
         )
 
-    price_change_insight = {
+    price_change_insight: dict = {
         "product": product_chosen_for_insight["product"],
         "insight": insight,
         "email": alert.email,
@@ -101,8 +104,10 @@ def generate_insights(lookback_days=14) -> list[dict]:
 
         # Calculate the average price of each of the tracked products
         # over the lookback days
-        end_date = datetime.datetime.now(tz=datetime.UTC)
-        start_date = end_date - datetime.timedelta(days=lookback_days)
+        end_date: datetime.datetime = datetime.datetime.now(tz=datetime.UTC)
+        start_date: datetime.datetime = end_date - datetime.timedelta(
+            days=lookback_days
+        )
         average_price_of_tracked_products: QuerySet[ProductPriceLog] = (
             ProductPriceLog.objects.filter(
                 item_id__in=tracked_product_ids, timestamp__gte=start_date
