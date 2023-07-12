@@ -43,7 +43,7 @@ PUBSUB_HOST = os.environ.get("PUBSUB_HOST", "localhost")
 PUBSUB_PORT = os.environ.get("PUBSUB_PORT", 6379)
 PUBSUB_CHANNEL = os.environ.get("PUBSUB_CHANNEL", "ebay-alerts")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["host.docker.internal", "localhost"]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
     "http://localhost:3000",
