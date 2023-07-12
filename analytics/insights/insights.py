@@ -86,14 +86,16 @@ def gather_price_change_insight(
 
 def generate_insights(lookback_days=14) -> list[dict]:
     """
-    Generate insights for all alerts
+    Generate insights for all active alerts.
+
+    :param lookback_days: number of days to look back for price changes
     """
-    # Get active alerts one
+    # Get all active alerts for which insights need to be generated
     active_alerts = ActiveAlert.objects.filter(is_active=True)
 
     insights: list[dict] = []
     for alert in active_alerts:
-        # Fetch the tracked products for the alert
+        # Fetch the tracked products for the active alert
         tracked_products = alert.tracked_products.all()
         tracked_product_ids = [product.item_id for product in tracked_products]
 
@@ -109,13 +111,20 @@ def generate_insights(lookback_days=14) -> list[dict]:
             .annotate(average_price=Avg("price"))
         )
 
+        # Create a dictionary of product id to average price for
+        # easy lookup
         average_price_by_product_id: dict[str : decimal.Decimal] = {
             product["item_id"]: product["average_price"]
             for product in average_price_of_tracked_products
         }
+
+        # Gather price change insights for the alert
         price_change_insight: dict | None = gather_price_change_insight(
             tracked_products, average_price_by_product_id, lookback_days, alert
         )
+
+        # Insight may be None if there are not enough products to
+        # generate an insight.
         if price_change_insight:
             insights.append(price_change_insight)
 

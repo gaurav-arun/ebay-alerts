@@ -26,7 +26,7 @@ class ConsumedPubSubEvent(TimestampedModel):
     processed = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"[{self.id}]:[{self.type}]:[{self.processed}]"
+        return f"[id - {self.id}]:[{self.type}]:[processed - {self.processed}]"
 
 
 class ProductPriceLog(models.Model):
@@ -45,8 +45,8 @@ class ProductPriceLog(models.Model):
 
     def __str__(self):
         return (
-            f"[{self.id}]:[{self.item_id}]:[{self.title}]:"
-            f"[{self.price}]:[{self.currency}]"
+            f"[id - {self.id}]:[item_id - {self.item_id}]:[title - {self.title}]:"
+            f"[price - {self.price}]:[{self.currency}]"
         )
 
 

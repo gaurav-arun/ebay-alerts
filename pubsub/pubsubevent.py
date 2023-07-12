@@ -22,3 +22,7 @@ class PubSubEvent:
     type: PubSubEventType
     payload: dict
     timestamp: datetime = field(default_factory=datetime.now)
+
+    def __str__(self):
+        alert_id = self.payload.get("id", "N/A")
+        return f"[alert_id: {alert_id}]:[{self.type}]:[{self.timestamp}]"

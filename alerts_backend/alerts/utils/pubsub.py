@@ -24,7 +24,8 @@ def publish_event(event_type: PubSubEventType, payload: dict) -> None:
         event = PubSubEvent(type=event_type, payload=payload)
         producer.produce(event=event)
         logger.info(
-            f'Published event for alert: [{event.type}]: [{event.payload["id"]}]'
+            f"Published event for alert: "
+            f'[alert_id - {event.payload.get("id", "N/A")}]:[{event.type}]'
         )
     except Exception as e:
         logger.error(f"Error publishing event: {e}")

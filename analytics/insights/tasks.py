@@ -124,7 +124,7 @@ def process(id: int):
     """
     event = ConsumedPubSubEvent.objects.get(id=id)
 
-    logger.info(f"Processing an event from ConsumedPubSubEvent: {event}")
+    logger.info(f"Processing a ConsumedPubSubEvent: {event}")
     if event.type == PubSubEventType.NEW_PRODUCTS.value:
         _process_new_products_event_type(event)
     elif event.type == PubSubEventType.ALERT_CREATED.value:
@@ -134,7 +134,7 @@ def process(id: int):
     elif event.type == PubSubEventType.ALERT_DELETED.value:
         _process_alert_deleted_event_type(event)
     else:
-        raise ValueError(f"Unknown PubSubEvent: {event}")
+        raise ValueError(f"Unknown ConsumedPubSubEvent type: {event}")
 
     # Update AlertEvent object
     event.processed = True
@@ -158,4 +158,4 @@ def send_product_insights():
             context=insight,
             template_name="mails/insight.html",
         )
-        logger.info(f"Sent product insights to {insight['email']}")
+        logger.info(f"Sent product insights to {insight['email']}: [{insight}]")

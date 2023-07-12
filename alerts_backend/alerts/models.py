@@ -23,4 +23,7 @@ class Alert(TimestampedModel):
     frequency = models.IntegerField(null=False)
 
     def __str__(self):
-        return f"[{self.id}]:[{self.email}]:[{self.keywords}]:[{self.frequency}]"
+        return (
+            f"[id - {self.id}]:[{self.email}]:"
+            f"[{self.keywords}]:[freq - {self.frequency}]"
+        )
