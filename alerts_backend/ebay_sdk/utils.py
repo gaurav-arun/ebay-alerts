@@ -52,7 +52,7 @@ def parse_response(
     if skip_items_without_price:
         items = [item for item in items if item.price.currency and item.price.value]
 
-    # Sort by price
+    # Sort by the lowest price
     items.sort(key=lambda item: item.price.value)
 
     return items
