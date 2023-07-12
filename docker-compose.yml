@@ -102,7 +102,7 @@ services:
     build:
       context: .
       dockerfile: ebay_mock/dockerfiles/server.dockerfile
-    container_name: ebaymock
+    container_name: ebay-mock
     environment:
     - DJANGO_SETTINGS_MODULE=ebay_mock.settings
     depends_on:
