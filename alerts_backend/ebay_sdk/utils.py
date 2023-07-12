@@ -31,10 +31,12 @@ def get_encoded_oauth_basic_token() -> str:
         client_id = settings.EBAY_CLIENT_ID_PRODUCTION
         client_secret = settings.EBAY_CLIENT_SECRET_PRODUCTION
 
-    if not client_id or not client_secret:
+    client_id_or_client_secret_not_set = not client_id or not client_secret
+
+    if ebay_api_key_env != "mock" and client_id_or_client_secret_not_set:
         raise ValueError(
             "EBAY_CLIENT_ID_<SANDBOX|PRODUCTION> and "
-            "EBAY_CLIENT_SECRET_<SANDBOX|PRODUCTION> must be set in .env"
+            "EBAY_CLIENT_SECRET_<SANDBOX|PRODUCTION> must be set in .env file"
         )
 
     client_creds = ":".join([client_id, client_secret]).encode("utf-8")
