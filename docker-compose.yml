@@ -28,7 +28,7 @@ services:
     - ./alerts_backend:/app
     - ./pubsub:/app/pubsub
     env_file:
-    - alerts_backend/.env
+    - alerts_backend/.env.docker
     environment:
     - DJANGO_SETTINGS_MODULE=alerts_backend.settings_docker
     - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
