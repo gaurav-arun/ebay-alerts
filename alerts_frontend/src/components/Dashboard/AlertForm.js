@@ -5,7 +5,7 @@ import * as alertsService from '../../services';
 const AlertForm = ({ title, buttonLabel, alerts, setAlerts, setIsEditing, setIsAdding, selectedAlert }) => {
   const [email, setEmail] = useState(selectedAlert ? selectedAlert.email : '');
   const [keywords, setKeywords] = useState(selectedAlert ? selectedAlert.keywords : '');
-  const [frequency, setFrequency] = useState(selectedAlert ? selectedAlert.frequency : '');
+  const [frequency, setFrequency] = useState(selectedAlert ? selectedAlert.frequency : 2);
   const [emailError, setEmailError] = useState('');
   const [keywordsError, setKeywordsError] = useState('');
 
@@ -43,7 +43,7 @@ const AlertForm = ({ title, buttonLabel, alerts, setAlerts, setIsEditing, setIsA
     e.preventDefault();
 
     if (!email || !keywords || !frequency) {
-      const errorMessage =  !frequency ? ' Please select a frequency.': ' Please fill out all fields.';
+      const errorMessage =  'Please fill out all fields.';
       return Swal.fire({
         icon: 'error',
         title: 'Error!',
