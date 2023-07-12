@@ -35,7 +35,7 @@
     ]
   },
   "homepage": "https://github.com/gaurav-arun",
-  "name": "crud-app",
+  "name": "alerts-app",
   "private": true,
   "scripts": {
     "build": "react-scripts build",
