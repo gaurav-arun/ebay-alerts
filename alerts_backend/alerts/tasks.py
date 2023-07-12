@@ -4,11 +4,11 @@ from celery import shared_task
 from ebay_sdk import client
 from ebay_sdk import models as ebay_models
 from ebay_sdk import utils as ebay_utils
-from utils import mails
 
 from pubsub import PubSubEventType
 
 from .models import Alert
+from .utils import mails
 from .utils import pubsub as pubsub_utils
 
 logger = logging.getLogger(__name__)
