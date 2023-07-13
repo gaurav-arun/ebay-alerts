@@ -63,8 +63,9 @@ $ docker-compose up
 - Swagger UI can be opened [here](http://localhost:8080).
 
 ## Architecture
+![ebay_alerts_architecture](https://github.com/gaurav-arun/ebay-alerts/assets/12862099/3a288dab-494b-47f3-bb3e-f05631f8e83a)
 
-![image](https://github.com/gaurav-arun/ebay_alerts/assets/12862099/edf9e8c3-c375-4e6c-a5de-a4b7120ffcf4)
+
 
 At a high level, this project comprises 4 different systems:
 1. Alerts Service
