@@ -2,40 +2,65 @@
 
 A Full Stack Web Application that allows a user to configure alerts for specific search phrases on eBay. The application then sends periodic updates with related products to the user via email. Additionally, the user receives periodic emails with insights about the variation in prices of the products in the last 2 weeks.
 
+## Features
+- Phase 1
+  | Feature | Status|
+  |---------|-------|
+  |Create all CRUD operations |✔️|
+  |Add a simple UI (preferred in ReactJs) to create new alerts  |✔️|
+  |The solution should work locally using: docker-compose up |✔️|
+  |Expose the documentation of the API with swagger |✔️|
+  |Provide a short explanation for your architecture and design decisions |✔️|
+  |Provide documentation about project setup, run tests, and run the solution locally |✔️|
+  |Add tests whenever possible|✖️|
+  
+- Phase 2
+  | Feature | Status|
+  |---------|-------|
+  |Collect data about user alerts and product prices|✔️|
+  |Generate useful product insights|✔️|
+  |Send periodic emails to the user with product insights|✔️|
+  |Use a shared resource for the Phase 1 application to communicate with the Phase 2 application|✔️| 
+  |Add tests whenever possible.|✖️|
+  
 ## Project Setup
+- Clone this repository
+  ```
+  git clone https://github.com/gaurav-arun/ebay_alerts.git
+  ```
+- Navigate to the root directory of the project.
 
-To run this project, you will need to configure the following: 
-- `eBay app credentials` to fetch accurate search results from the eBay marketplace.
-- `SMTP credentials` for receiving emails in your mailbox. 
+- Override the `environment` variables for the `alerts_celery` service and the `analytics_celery` service in the `docker-compose.yml`. `docker-compose.yml` is available in the root directory of the project.
 
-The following section shows how to edit the `docker-compose.yml` file directly to run the project locally. If you prefer not to edit the `docker-compose.yml`, you can configure these variables in the `.env.docker` file in the `alerts_backend` and `analytics_backend` directories respectively.
-
-- Override these `environment` variables for the `alerts_celery` service:
-```environment
-- EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-- EMAIL_HOST_USER=<smtp-username>
-- EMAIL_HOST_PASSWORD=<smtp-password>
-- EMAIL_PORT=<smtp-port>
-
-- EBAY_API_ENV=production
-- EBAY_CLIENT_ID_PRODUCTION=<your-eBay-production-app-client-id>
-- EBAY_CLIENT_SECRET_PRODUCTION=<eBay-production-app-client-secret>
-```
-
-- Override these `environment` variables for the `analytics_celery` service:
-```environment
-- EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-- EMAIL_HOST_USER=<smtp-username>
-- EMAIL_HOST_PASSWORD=<smtp-password>
-- EMAIL_PORT=<smtp-port>
-```
+  > While copy-pasting credentials from eBay or Mailtrap to `docker-compose.yml`, don't forget to remove quotes around them.
+  
+   ### alerts_celery
+   ```environment
+   - EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+   - EMAIL_HOST_USER=<smtp-username>
+   - EMAIL_HOST_PASSWORD=<smtp-password>
+   - EMAIL_PORT=<smtp-port>
+   
+   - EBAY_API_ENV=production
+   - EBAY_CLIENT_ID_PRODUCTION=<your-eBay-production-app-client-id>
+   - EBAY_CLIENT_SECRET_PRODUCTION=<eBay-production-app-client-secret>
+   ```
+   
+   ### analytics_celery
+   ```environment
+   - EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+   - EMAIL_HOST_USER=<smtp-username>
+   - EMAIL_HOST_PASSWORD=<smtp-password>
+   - EMAIL_PORT=<smtp-port>
+   ```
 
 - Run the project using the docker-compose:
 ```command
 $ docker-compose up
 ```
 
-- Once all containers are up, head to the [Alerts Dashboard](http://localhost:3000) and configure a few alerts. You should start receiving product price alerts and insights in your mailbox. The product insights are generated at 30-minute intervals by default. 
+- Once all containers are up, head to the [Alerts Dashboard](http://localhost:3000) and configure a few alerts. You should start receiving product price alerts and insights in the configured mailbox. The product insights are generated at 30-minute intervals by default.
+- Swagger UI can be opened [here](http://localhost:8080).
 
 ## Architecture
 
@@ -51,11 +76,11 @@ At a high level, this project comprises 4 different systems:
 
 Alerts Service follows a microservice architecture with the following components:
 1. `Alerts Frontend`
-   - Configure and manage alerts by the end-user
+   - To configure and manage alerts by the end-user
 2. `Alerts API Server`
    - Exposes REST endpoints for the Alerts Frontend
    - Offloads blocking/time-consuming tasks to the background workers
-   - Publishes the changes in the alert configuration to the PubSub channel. This information is used to track user activity and to tweak product insights accordingly.
+   - Publishes the changes in the alert configuration to the PubSub channel
 3. `Alerts Backgroud Workers`
    - Fetches product information from eBay
    - Sends out periodic alerts to the user via email
@@ -67,7 +92,7 @@ Alerts Service follows a microservice architecture with the following components
 
 Analytics Service also follows microservices architecture with the following components:
 1. `Analytics Consumer Service`
-   - Subscribes to specific topics on the PubSub channels
+   - Subscribes to specific topics on the PubSub channel
    - Consumes events received on this channel
    - Offloads the processing of these events to the background workers
 3. `Analytics Background Workers`
@@ -79,7 +104,7 @@ Analytics Service also follows microservices architecture with the following com
 
 ### PubSub Service
 
-`PubSub` is a shared resource between Alerts Service and Analytics Service. Alerts Service publishes events on PubSub channels. Analytics Service subscribes to these channels and consumes events that arrive on this channel in order.
+`PubSub` is a shared resource between Alerts Service and Analytics Service. `Alerts Service` publishes events on PubSub channels. `Analytics Service` subscribes to these channels and consumes events that arrive on this channel in order. This information received over the `PubSub` channel is used by `Analytics Service` to track alert configuration and product prices.
 
 ### Third-Party Services
 
@@ -92,6 +117,7 @@ Analytics Service also follows microservices architecture with the following com
 ```
 ├── README.md
 ├── alerts_backend
+│   ├── .env.docker
 │   ├── alerts_backend
 │   │   ├── celery.py
 │   ├── alerts
@@ -99,6 +125,7 @@ Analytics Service also follows microservices architecture with the following com
 │   ├── ebay_sdk
 ├── alerts_frontend
 ├── analytics
+│   ├── .env.docker
 │   ├── analytics
 │   │   ├── celery.py
 │   ├── insights
