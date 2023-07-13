@@ -146,9 +146,9 @@ OpenAPI 3 documentation for `Alerts API Service` is automatically generated usin
   - Celery support multiple brokers like Rabbit MQ, Kafka, etc. However, I chose Redis because I also needed a caching layer to store the eBay Auth Token acquired using the [Client Credentials Grant Flow](https://developer.ebay.com/api-docs/static/oauth-client-credentials-grant.html) required for eBay [search API](https://developer.ebay.com/api-docs/buy/browse/resources/item_summary/methods/search#uri.filter). 
 - Database
   - For OLTP, I needed a relational database. PostgreSQL is one of the popular choices for this.
-  - For OLAP, I choose PostgreSQL primarily for the ease of setup, the scale of the project, and my familiarity with the technology. There are other options like Apache Cassandra or Hadoop that may be a better choice if we are dealing with a massive scale and require complex analytical processing and decision-making based on historical or aggregated data.
+  - For OLAP, I choose PostgreSQL primarily for the ease of setup, the scale of the project, and my familiarity with the technology. Other options like Apache Cassandra or Hadoop may be a better choice if we are dealing with a massive scale and require complex analytical processing and decision-making based on historical or aggregated data.
 - PubSub
-  - I needed asynchronous messaging, typically a publisher-subscriber model, to provide a way for `Alerts Service` and `Analytics Service` to communicate in a decoupled manner. While there are other options like Apache Kafka that support streaming, total ordering, etc. at a massive scale, for this project, Redis Pub/Sub seemed capable enough to do the job. It is also easier to set up.
+  - I needed asynchronous messaging, typically a publisher-subscriber model, to provide a way for `Alerts Service` and `Analytics Service` to communicate in a decoupled manner. While other options like Apache Kafka support streaming, total ordering, etc. at a massive scale, for this project, Redis Pub/Sub seemed capable enough to do the job. It is also easier to set up.
 - Consumer Service
   - Conceptually, it is a dedicated service that consumes events from the `PubSub` channels and persists them in DB for further processing. For this project, I am running the `Consumer Service` as a separate process within the `Analytics Background Worker` service itself. It is implemented as follows:
   - I have created a new management command called `pubsub_event_consumer` under the `insights` app. In the `analytics/dockerfiles/celery.dockerfile` this management command is started as a separate process using docker's CMD directive.
@@ -160,14 +160,14 @@ OpenAPI 3 documentation for `Alerts API Service` is automatically generated usin
 - SMTP Service
   - I choose a free and easy-to-configure solution - [Mailtrap](https://mailtrap.io/). It is also possible to setup local SMTP service using docker images like [inbucket](https://hub.docker.com/r/inbucket/inbucket/) or [Mailhog](https://hub.docker.com/r/mailhog/mailhog/). However, I felt that the HTML rendering capabilities of these solutions are very limited. I also like the HTML Check and Span Analysis features provided by `Mailtrap`.
 
-- `ebay_sdk`: I evaluated the publicly available [ebaysdk](https://github.com/timotheus/ebaysdk-python), but the interface and configuration were not easy to understand. Moreover, it relies on eBay's SOAP APIs and seems pretty outdated. So I decided to implement my own version of `ebay_sdk` using eBay's REST APIs and only the required parts.
+- `ebay_sdk`: I evaluated the publicly available [ebaysdk](https://github.com/timotheus/ebaysdk-python), but the interface and configuration were not easy to understand. Moreover, it relies on eBay's SOAP APIs and seems pretty outdated. So I decided to implement my version of `ebay_sdk` using eBay's REST APIs and only the required parts.
 
 ## Assumptions
-- The product alert frequency of [2, 10, 30] minutes does not change that often. If not, this list should be populated using an API call to the Alerts Backend.
+- The product alert frequency of [2, 10, 30] minutes does not change often. If not, this list should be populated using an API call to the Alerts Backend.
 - By extension, celery crontabs are hard-coded to run at [2, 10, 30] minutes.
 - Same for product insight frequency. Currently, it is hard-coded in celery crontab to run every 30 minutes.
 
-## Possible Imporvements
+## Possible Improvements
 #### Tooling
 - Use `Poetry` for dependency management. Currently, it's a single `requirements.txt` file with both the development and production dependencies.
 - `Pytest` can be used for writing unit tests and generating code coverage.
