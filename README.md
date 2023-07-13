@@ -1,6 +1,6 @@
 # eBay Alerts
 
-A Full Stack Web Application that allows a user to configure alerts for specific search phrases on eBay. The application then sends periodic updates with related products to the user via email. Additionally, the user receives periodic emails with insights about the variation in prices of the products related to the search results.
+A Full Stack Web Application that allows a user to configure alerts for specific search phrases on eBay. The application then sends periodic updates with related products to the user via email. Additionally, the user receives periodic emails with insights about the variation in prices of the products in last 2 weeks.
 
 ## Project Setup
 
@@ -10,34 +10,32 @@ To run this project, you will need to configure:
 
 Following section shows how to edit `docker-compose.yml` file directly to run the project on local. If you prefer not to edit the `docker-compose.yml`, you can configure these variables in `.env.docker` file in `alerts_backend` and `analytics_backend` directory respectively.
 
-- 🐘 Override these `environment` variables for `alerts_celery` service:
+- Override these `environment` variables for `alerts_celery` service:
 ```environment
 - EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-- EMAIL_HOST_USER=<your-smtp-username>
-- EMAIL_HOST_PASSWORD=<your-smtp-password>
+- EMAIL_HOST_USER=<smtp-username>
+- EMAIL_HOST_PASSWORD=<smtp-password>
+- EMAIL_PORT=<smtp-port>
 
 - EBAY_API_ENV=production
 - EBAY_CLIENT_ID_PRODUCTION=<your-eBay-production-app-client-id>
 - EBAY_CLIENT_SECRET_PRODUCTION=<eBay-production-app-client-secret>
 ```
 
-- 🐘 Override these `environment` variables for `analytics_celery` service:
+- Override these `environment` variables for `analytics_celery` service:
 ```environment
 - EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
 - EMAIL_HOST_USER=<your-smtp-username>
 - EMAIL_HOST_PASSWORD=<your-smtp-password>
+- EMAIL_PORT=2525
 ```
 
-- 🏃 Run the project using:
+- Run the project using:
 ```command
 docker-compose up
 ```
 
-- 📬 Finally, Configure a few alerts from the Alerts Dashboard and you should start receving product price alerts and insights in your mailbox.
-
-## Quick Walkthrough - WIP
-Here is a screen recording of what to expect after running the project. 
-
+- Finally, Configure a few alerts from the [Alerts Dashboard](http://localhost:3000) and you should start receving product price alerts and insights in your mailbox. The product insights are generated at 30 minute interval by default. 
 
 ## Architecture
 
@@ -50,6 +48,7 @@ At a high level, this project comprises of 4 different systems:
 4. Third Party Services - eBay and SMTP(Email)
 
 ### Alerts Service
+
 Alerts Service follows a microservice architecture with the following components:
 1. `Alerts Frontend`
    - Configure and manage alerts by the end-user
@@ -65,6 +64,7 @@ Alerts Service follows a microservice architecture with the following components
    - OLTP Database optimized for servicing API requests from the Alerts Frontend
 
 ### Analytics Service
+
 Analytics Service also follows microservices architecture with the following components:
 1. `Analytics Consumer Service`
    - Subscribes to specific topics on the PubSub channels
@@ -78,13 +78,46 @@ Analytics Service also follows microservices architecture with the following com
    - OLAP Database
 
 ### PubSub Service
+
 `PubSub` is a shared resource between Alerts Service and Analytics Service. Alerts Service publishes events on the PubSub channels. Analytics Service subscribes to these channels and consumes events that arrive on this channel in order.
 
 ### Third Party Services
+
 1. `EBay API Server` provides REST endpoints used by Alerts Service to fetch product information based on search phrases.
 2. `SMTP Server` sends out email notification to the users.
 
+## Project Structure
+
+```
+├── README.md
+├── alerts_backend
+│   ├── alerts_backend
+│   │   ├── celery.py
+│   ├── alerts
+│   │   ├── tasks.py
+├── alerts_frontend
+├── analytics
+│   ├── analytics
+│   │   ├── celery.py
+│   ├── insights
+│   │   ├── tasks.py
+│   │   ├── management
+│   │   │   └── commands
+│   │   │       └── pubsub_event_consumer.py
+├── docker-compose.yml
+├── ebay_mock
+└── pubsub
+```
+
+- `alerts_backend`: Django application for Alerts API Service and Alerts Backgroud Workers
+- `alerts_frontend`: React application for Alerts Frontend
+- `analytics`: Django application for Analytics Backgroud Workers
+- `analytics/insights/management/commands/pubsub_event_consumer.py`: Management command to run Analytics Consumer Service
+- `ebay_mock`: Mocks service for Ebay API. To run this set `EBAY_API_ENV=mock`. It mimics price variation if ebay products and return a random list of products in the response.
+- `pubsub`: A thin wrapper around Redis PubSub API. This module is used by Alerts Service as well as Analytics Service. It defines standard interface for the PubSub events and standard implementation for initializing a `Producer` and a `Consumer` instance. 
+
 ## Techonologies Used
+
 | Service  | Technologies/Tools|
 |----------|----------|
 | Alerts Frontend   | React JS |
@@ -98,9 +131,11 @@ Analytics Service also follows microservices architecture with the following com
 | SMTP Service | Mailtrap |
 
 ## API Documentation
+
 OpenAPI 3 documentaion for `Alerts API Service` is automatically generated using [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/) and hosted using [Swagger UI](https://hub.docker.com/r/swaggerapi/swagger-ui) on [http://localhost:8080](http://localhost:8080)
 
-## Considerations
+## Design Considerations
+
 - Background Workers
   - Celery support multiple brokers like Rabbit MQ, Kafka etc. However, I chose Redis because I also needed a caching layer to store the ebay Auth Token acquired using the [Client Credentials Grant Flow](https://developer.ebay.com/api-docs/static/oauth-client-credentials-grant.html) required for ebay [search API](https://developer.ebay.com/api-docs/buy/browse/resources/item_summary/methods/search#uri.filter). 
 - Database
@@ -118,3 +153,8 @@ OpenAPI 3 documentaion for `Alerts API Service` is automatically generated using
     ```
 - SMTP Service
   - I choose a free and easy to configure solution - [Mailtrap](https://mailtrap.io/). It is also possible to setup local SMTP service using docker images like [inbucket](https://hub.docker.com/r/inbucket/inbucket/) or [Mailhog](https://hub.docker.com/r/mailhog/mailhog/). However, I felt that HTML rendering capabilitis of these solutions are very limited. I also like the HTML Check and Span Analysis features provided by `Mailtrap`.
+
+## Possible Imporvements
+
+## References
+- CSS files for frontend [app](https://github.com/taniarascia/primitive)
