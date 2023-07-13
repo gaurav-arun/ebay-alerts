@@ -25,9 +25,9 @@ The following section shows how to edit the `docker-compose.yml` file directly t
 - Override these `environment` variables for the `analytics_celery` service:
 ```environment
 - EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
-- EMAIL_HOST_USER=<your-smtp-username>
-- EMAIL_HOST_PASSWORD=<your-smtp-password>
-- EMAIL_PORT=2525
+- EMAIL_HOST_USER=<smtp-username>
+- EMAIL_HOST_PASSWORD=<smtp-password>
+- EMAIL_PORT=<smtp-port>
 ```
 
 - Run the project using the docker-compose:
@@ -35,7 +35,7 @@ The following section shows how to edit the `docker-compose.yml` file directly t
 $ docker-compose up
 ```
 
-- Finally, Configure a few alerts from the [Alerts Dashboard](http://localhost:3000) and you should start receiving product price alerts and insights in your mailbox. The product insights are generated at 30-minute intervals by default. 
+- Once all containers are up, head to the [Alerts Dashboard](http://localhost:3000) and configure a few alerts. You should start receiving product price alerts and insights in your mailbox. The product insights are generated at 30-minute intervals by default. 
 
 ## Architecture
 
@@ -83,11 +83,12 @@ Analytics Service also follows microservices architecture with the following com
 
 ### Third-Party Services
 
-1. `eBay API Server` provides REST endpoints used by Alerts Service to fetch product information based on search phrases.
+1. `eBay API Server` provides REST endpoints that `Alerts Service` uses to fetch product information based on search phrases.
 2. `SMTP Server` sends out email notifications to the users.
 
-## Project Structure
 
+## Project Structure
+⚠️ The visualization below only shows the directories and files that are relevant to understand the overall structure of the project.
 ```
 ├── README.md
 ├── alerts_backend
@@ -95,6 +96,7 @@ Analytics Service also follows microservices architecture with the following com
 │   │   ├── celery.py
 │   ├── alerts
 │   │   ├── tasks.py
+│   ├── ebay_sdk
 ├── alerts_frontend
 ├── analytics
 │   ├── analytics
@@ -110,11 +112,15 @@ Analytics Service also follows microservices architecture with the following com
 ```
 
 - `alerts_backend`: Django application for Alerts API Service and Alerts Background Workers
+- `alerts_backend/ebay_sdk`: Provides easy-to-use utility methods for fetching product information from eBay for specified search phrases. It abstracts away all the complexities like:
+  - Acquiring an authorization token using client credentials grant flow
+  - Caching and reusing the authorization token until it expires
+  - Reacquiring an authorization token when it expires
 - `alerts_frontend`: React application for Alerts Frontend
 - `analytics`: Django application for Analytics Background Workers
 - `analytics/insights/management/commands/pubsub_event_consumer.py`: Management command to run Analytics Consumer Service
-- `ebay_mock`: Mocks service for Ebay API. To run this set `EBAY_API_ENV=mock`. It mimics the price variation of eBay products and returns a random list of products in the response.
-- `pubsub`: A thin wrapper around Redis PubSub API. This module is used by Alerts Service as well as Analytics Service. It defines a standard interface for the PubSub events and standard implementation for initializing a `Producer` and a `Consumer` instance. 
+- `ebay_mock`: Mocks service for Ebay API. To run this set environment variable `EBAY_API_ENV=mock` under the `alerts_celery` service in the `docker-compose.yml`. It mimics the price variation of eBay products and returns a random list of products in the response. It is useful for local development or if you don't have eBay app credentials handy.
+- `pubsub`: A thin wrapper around Redis PubSub API. This module is used by `Alerts Service` as well as `Analytics Service`. It defines a standard interface for the PubSub events and concrete implementations for creating a `RedisProducer` and a  `RedisConsumer` instance. 
 
 ## Technologies Used
 
@@ -154,7 +160,24 @@ OpenAPI 3 documentation for `Alerts API Service` is automatically generated usin
 - SMTP Service
   - I choose a free and easy-to-configure solution - [Mailtrap](https://mailtrap.io/). It is also possible to setup local SMTP service using docker images like [inbucket](https://hub.docker.com/r/inbucket/inbucket/) or [Mailhog](https://hub.docker.com/r/mailhog/mailhog/). However, I felt that the HTML rendering capabilities of these solutions are very limited. I also like the HTML Check and Span Analysis features provided by `Mailtrap`.
 
-## Possible Imporvements
+- `ebay_sdk`: I evaluated the publicly available [ebaysdk](https://github.com/timotheus/ebaysdk-python), but the interface and configuration were not easy to understand. Moreover, it relies on eBay's SOAP APIs and seems pretty outdated. So I decided to implement my own version of `ebay_sdk` using eBay's REST APIs and only the required parts.
 
+## Assumptions
+- The product alert frequency of [2, 10, 30] minutes does not change that often. If not, this list should be populated using an API call to the Alerts Backend.
+- By extension, celery crontabs are hard-coded to run at [2, 10, 30] minutes.
+- Same for product insight frequency. Currently, it is hard-coded in celery crontab to run every 30 minutes.
+
+## Possible Imporvements
+#### Tooling
+- Use `Poetry` for dependency management. Currently, it's a single `requirements.txt` file with both the development and production dependencies.
+- `Pytest` can be used for writing unit tests and generating code coverage.
+- `pubsub` and `ebay_sdk` can be maintained as separate git repositories and then added as a submodule of the main git repository. Another option is to publish these modules as PIP installable packages and then use `Poetry` to pin these modules as dependencies.
+- `Dockerfile` and `docker-compose.yml` are not production ready because they expose non-standard ports and use bind mounts.
+- We should use `-slim`, or `-alpine` versions of the images if possible to reduce the build time and image sizes.
+#### Code
+- [Must Have] Unit test for all the modules
+- `alerts_backend.alerts.task.send_alert`: Improved error handling for Alert tasks and possibly split the tasks into smaller subtasks - e.g. `fetch_product_info()`, `send_product_alert()`, `publish_product_info()`. The results of each of these steps can be persisted in DB. That way each of these steps can happen in isolation and can be retried on failure.
+- `analytics.insights.task.send_product_insight`: It stores insights generated for each alert in memory. A better approach would be to persist the generated insights in DB and then use a separate task to send out emails with retries on failure.
+- Add type hints and docstrings wherever possible.
 ## References
 - CSS files for frontend [app](https://github.com/taniarascia/primitive)
