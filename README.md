@@ -1,6 +1,6 @@
 # eBay Alerts
 
-A fully dockerized full-stack web application that allows a user to configure alerts for specific search phrases on eBay. The application then sends periodic updates with related products to the user via email. Additionally, the user receives periodic emails with insights about the variation in prices of the products in the last 2 weeks.
+A fully dockerized full-stack web application that enables a user to configure alerts for specific search phrases on eBay. The application then sends periodic updates with related products to the user via email. Additionally, the user receives periodic emails with insights about the variation in prices of the products in the last 2 weeks.
 
 ## Features
 
