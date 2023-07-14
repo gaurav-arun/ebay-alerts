@@ -59,9 +59,9 @@ A fully dockerized full-stack web application that enables a user to configure a
    ```
 
 - Run the project using the docker-compose:
-```command
-$ docker-compose up
-```
+  ```command
+  $ docker-compose up
+  ```
 
 - Once all containers are up, head to the [Alerts Dashboard](http://localhost:3000) and configure a few alerts. You should start receiving product price alerts and insights in the configured mailbox. The product insights are generated at 30-minute intervals by default.
 - Swagger UI can be opened [here](http://localhost:8080).
