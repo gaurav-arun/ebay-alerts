@@ -3,9 +3,9 @@
 A Fullstack Web Application that allows a user to configure alerts for specific search phrases on eBay. The application then sends periodic updates with related products to the user via email. Additionally, the user receives periodic emails with insights about the variation in prices of the products in the last 2 weeks.
 
 ## Features
-- Phase 1
-  | Feature | Status|
-  |---------|-------|
+
+  | Phase 1 | Status |
+  |---------|--------|
   |Create all CRUD operations |✔️|
   |Add a simple UI (preferred in ReactJs) to create new alerts  |✔️|
   |The solution should work locally using: docker-compose up |✔️|
@@ -14,15 +14,19 @@ A Fullstack Web Application that allows a user to configure alerts for specific 
   |Provide documentation about project setup, run tests, and run the solution locally |✔️|
   |Add tests whenever possible|✖️|
   
-- Phase 2
-  | Feature | Status|
-  |---------|-------|
+
+  | Phase 2 | Status |
+  |---------|--------|
   |Collect data about user alerts and product prices|✔️|
   |Generate useful product insights|✔️|
   |Send periodic emails to the user with product insights|✔️|
   |Use a shared resource for the Phase 1 application to communicate with the Phase 2 application|✔️| 
   |Add tests whenever possible.|✖️|
-  
+
+## Prerequisites
+- [Docker and Docker compose](https://docs.docker.com/desktop/)
+> This project has been developed using `Docker version 24.0.2, build cb74dfc` and `Docker Compose version v2.19.1`
+
 ## Project Setup
 - Clone this repository
   ```
@@ -112,6 +116,23 @@ Analytics Service also follows microservices architecture with the following com
 1. `eBay API Server` provides REST endpoints that `Alerts Service` uses to fetch product information based on search phrases.
 2. `SMTP Server` sends out email notifications to the users.
 
+## Overview of `docker-compose.yml`
+This section explains how the services defined in the `docker-compose.yml`  are conceptually mapped to the services explained in the Architecture.
+
+| docker-compose.yml | Architecture |
+|--------|-------------|
+| `alerts_backend` | Alerts API Service |
+| `alerts_celery` | Alerts Background Workers |
+| `alerts_redis` | Broker for Alerts Background Workers, Caching |
+| `alerts_postgres` | OLTP Database for Alerts Service |
+| `alerts_frontend` | UI for configuring Alerts |
+| `analytics_celery` | Analytics Background Workers, Analytics Consumer Service |
+| `analytics_redis` | Broker for Analytics Background Workers |
+| `analytics_postgres` | OLAP Database for Analytics Service |
+| `pubsub_redis` | PubSub Service |
+| `ebay_mock` | Mock service for eBay APIs |
+
+
 
 ## Project Structure
 ⚠️ The visualization below only shows the directories and files that are relevant to understand the overall structure of the project.
@@ -156,7 +177,7 @@ Analytics Service also follows microservices architecture with the following com
 |----------|----------|
 | Alerts Frontend   | React JS |
 | Alerts API Service   | Django  |
-| Alerts Background Workers   | Celery + Redis Broker  |
+| Alerts Background Workers   | Celery + Redis Broker |
 | Alerts DB  | PostgreSQL  |
 | PubSub     | Redis Pub/Sub |
 | Analytics Consumer Service | Django |
@@ -202,10 +223,11 @@ OpenAPI 3 documentation for `Alerts API Service` is automatically generated usin
 - `pubsub` and `ebay_sdk` can be maintained as separate git repositories and then added as a submodule of the main git repository. Another option is to publish these modules as PIP installable packages and then use `Poetry` to pin these modules as dependencies.
 - `Dockerfile` and `docker-compose.yml` are not production ready because they expose non-standard ports and use bind mounts.
 - We should use `-slim`, or `-alpine` versions of the images if possible to reduce the build time and image sizes.
+- The base URL for Alerts API Service is hardcoded in the Alerts Frontend code. It should be configurable using an environment variable.
 #### Code
 - [Must Have] Unit test for all the modules
 - `alerts_backend.alerts.task.send_alert`: Improved error handling for Alert tasks and possibly split the tasks into smaller subtasks - e.g. `fetch_product_info()`, `send_product_alert()`, `publish_product_info()`. The results of each of these steps can be persisted in DB. That way each of these steps can happen in isolation and can be retried on failure.
 - `analytics.insights.task.send_product_insight`: It stores insights generated for each alert in memory. A better approach would be to persist the generated insights in DB and then use a separate task to send out emails with retries on failure.
 - Add type hints and docstrings wherever possible.
 ## References
-- CSS files for frontend [app](https://github.com/taniarascia/primitive)
+- CSS files for alerts frontend [app](https://github.com/taniarascia/primitive)
