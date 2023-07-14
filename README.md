@@ -165,9 +165,13 @@ This section explains how the services defined in the `docker-compose.yml`  are 
   - Acquiring an authorization token using client credentials grant flow
   - Caching and reusing the authorization token until it expires
   - Reacquiring an authorization token when it expires
+- `alerts_backend/alerts_backend/celery.py`: Cronjobs for periodic alerts
+- `alerts_backend/alerts/tasks.py`: Celery tasks
 - `alerts_frontend`: React application for Alerts Frontend
 - `analytics`: Django application for Analytics Background Workers
-- `analytics/insights/management/commands/pubsub_event_consumer.py`: Management command to run Analytics Consumer Service
+- `analytics/insights/management/commands/pubsub_event_consumer.py`: Custom management command to run Analytics Consumer Service
+- `analytics/analytics/celery.py`: Cronjobs for periodic insights
+- `analytics/insights/tasks.py`: Celery tasks
 - `ebay_mock`: Mocks service for Ebay API. To run this set environment variable `EBAY_API_ENV=mock` under the `alerts_celery` service in the `docker-compose.yml`. It mimics the price variation of eBay products and returns a random list of products in the response. It is useful for local development or if you don't have eBay app credentials handy.
 - `pubsub`: A thin wrapper around Redis PubSub API. This module is used by `Alerts Service` as well as `Analytics Service`. It defines a standard interface for the PubSub events and concrete implementations for creating a `RedisProducer` and a  `RedisConsumer` instance. 
 
