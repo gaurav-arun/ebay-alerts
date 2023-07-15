@@ -53,12 +53,11 @@ INSTALLED_APPS = [
     "buy_api.apps.BuyApiConfig",
     "django.contrib.admin",
     "django.contrib.auth",
-    "django_extensions",
-    "rest_framework",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
     "corsheaders",
 ]
 
