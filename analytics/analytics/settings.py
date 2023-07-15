@@ -49,14 +49,12 @@ INSTALLED_APPS = [
     "insights.apps.InsightsConfig",
     "django.contrib.admin",
     "django.contrib.auth",
-    "django_extensions",
-    "rest_framework",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
     "corsheaders",
-    "drf_spectacular",
     "django_celery_beat",
 ]
 
