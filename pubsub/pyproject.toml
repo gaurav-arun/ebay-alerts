@@ -7,7 +7,7 @@ authors = ["gaurav <grathore07@gmail.com>"]
 description = ""
 name = "pubsub"
 readme = "README.md"
-version = "0.1.0"
+version = "0.1.1"
 
 [tool.poetry.dependencies]
 dataclasses = "^0.6"
