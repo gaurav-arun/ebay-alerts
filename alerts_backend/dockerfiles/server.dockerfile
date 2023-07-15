@@ -1,18 +1,25 @@
-FROM python:3.11
-
-WORKDIR /app
+FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-COPY alerts_backend/requirements.txt .
+# Install poetry and pin version
+RUN pip install poetry==1.5.1
 
-RUN pip install -r requirements.txt
+WORKDIR /app
 
+# Copy poetry dist for installation
+COPY pubsub/dist/ /app/pubsub/dist
+COPY pyproject.toml poetry.lock /app/
+
+RUN poetry config virtualenvs.create false \
+    && poetry install --only alerts_backend_docker --no-interaction --no-ansi --no-root
+
+# Remove pubsub dist files after installation
+RUN rm -rfv /app/pubsub
+
+# Copy the source code
 COPY alerts_backend .
-COPY pubsub ./pubsub
 
-# For documentation
-EXPOSE 8000
-
+# Run the django server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
