@@ -1,6 +1,4 @@
-from .pubsubevent import PubSubEvent, PubSubEventType
-from .redis_consumer import RedisConsumer
-from .redis_producer import RedisProducer
+from .pubsub import PubSubEvent, PubSubEventType, RedisConsumer, RedisProducer
 
 __all__ = [
     "PubSubEvent",
