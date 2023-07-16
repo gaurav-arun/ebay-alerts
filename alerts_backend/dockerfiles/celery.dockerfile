@@ -27,4 +27,4 @@ ENTRYPOINT ["dockerfiles/scripts/entrypoint.sh"]
 
 # Run celery and celery beat
 CMD celery -A alerts_backend beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler & \
-    celery -A alerts_backend worker --loglevel=info
+    celery -A alerts_backend worker --loglevel=info -Q alerts_backend
