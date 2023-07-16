@@ -11,16 +11,16 @@ A fully dockerized full-stack web application that enables a user to configure a
 | The solution should work locally using: docker-compose up                          | ✔️     |
 | Expose the documentation of the API with swagger                                   | ✔️     |
 | Provide a short explanation for your architecture and design decisions             | ✔️     |
-| Provide documentation about project setup, run tests, and run the solution locally | ✔️     |
+| Provide documentation about the project setup, run tests, and run the solution locally | ✔️     |
 | Add tests whenever possible                                                        | ✖️     |
 
-| Phase 2                                                                                       | Status |
-| --------------------------------------------------------------------------------------------- | ------ |
-| Collect data about user alerts and product prices                                             | ✔️     |
-| Generate useful product insights                                                              | ✔️     |
-| Send periodic emails to the user with product insights                                        | ✔️     |
-| Use a shared resource for the Phase 1 application to communicate with the Phase 2 application | ✔️     |
-| Add tests whenever possible.                                                                  | ✖️     |
+| Phase 2                                                            | Status |
+| ------------------------------------------------------------------ | ------ |
+| Collect data about user alerts and product prices                  | ✔️     |
+| Generate useful product insights                                   | ✔️     |
+| Send periodic emails to the user with product insights             | ✔️     |
+| Create a shared resource for the Phase 1 and Phase 2 applications to communicate | ✔️     |
+| Add tests whenever possible.                                       | ✖️     |
 
 ## Prerequisites
 
@@ -231,7 +231,7 @@ OpenAPI 3 documentation for `Alerts API Service` is automatically generated usin
 
 - SMTP Service
 
-  - I choose a free and easy-to-configure solution - [Mailtrap](https://mailtrap.io/). It is also possible to setup local SMTP service using docker images like [inbucket](https://hub.docker.com/r/inbucket/inbucket/) or [Mailhog](https://hub.docker.com/r/mailhog/mailhog/). However, I felt that the HTML rendering capabilities of these solutions are very limited. I also like the HTML Check and Span Analysis features provided by `Mailtrap`.
+  - I choose a free and easy-to-configure solution - [Mailtrap](https://mailtrap.io/). It is also possible to setup local SMTP service using docker images like [inbucket](https://hub.docker.com/r/inbucket/inbucket/) or [Mailhog](https://hub.docker.com/r/mailhog/mailhog/). However, I felt that the HTML rendering capabilities of these solutions are very limited. I also like the HTML Check and Spam Analysis features provided by `Mailtrap`.
 
 - `ebay_sdk`: I evaluated the publicly available [ebaysdk](https://github.com/timotheus/ebaysdk-python), but the interface and configuration were not easy to understand. Moreover, it relies on eBay's SOAP APIs and seems pretty outdated. So I decided to implement my version of `ebay_sdk` using eBay's REST APIs and only the required parts.
 
@@ -246,7 +246,7 @@ OpenAPI 3 documentation for `Alerts API Service` is automatically generated usin
 #### Tooling
 
 - `Pytest` can be used for writing unit tests and generating code coverage.
-- `ebay_sdk` can be maintained as separate git repositories and then added as a submodule of the main git repository. Another option is to publish this module as PIP installable packages and then use `Poetry` to pin this module as a dependency.
+- `ebay_sdk` can be maintained as separate git repositories and then added as a submodule of the main git repository. Another option is to publish this module as PIP installable package and then use `Poetry` to pin this module as a dependency.
 - `Dockerfile` and `docker-compose.yml` are not production ready because they expose non-standard ports and use bind mounts.
 - The base URL for Alerts API Service is hardcoded in the Alerts Frontend code. It should be configurable using an environment variable.
 
