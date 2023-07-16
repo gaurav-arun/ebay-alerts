@@ -8,6 +8,7 @@ packages = [{include = "ebay_alerts"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+python-decouple = "^3.8"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.3.3"
@@ -29,6 +30,7 @@ pubsub = {path = "pubsub/dist/pubsub-0.1.1.tar.gz", develop=false}
 python = "^3.11"
 redis = "4.6.0"
 requests = "2.31.0"
+python-decouple = "^3.8"
 
 [tool.poetry.group.analytics_backend_docker.dependencies]
 celery = "5.3.1"
@@ -45,13 +47,14 @@ psycopg2-binary = "2.9.6"
 pubsub = {path = "pubsub/dist/pubsub-0.1.1.tar.gz", develop=false}
 python = "^3.11"
 redis = "4.6.0"
+python-decouple = "^3.8"
 
 [tool.poetry.group.ebay_mock_docker.dependencies]
 Django = "4.2.3"
 django-cors-headers = "4.1.0"
 djangorestframework = "3.14.0"
 python = "^3.11"
-
+python-decouple = "^3.8"
 
 [build-system]
 requires = ["poetry-core"]
