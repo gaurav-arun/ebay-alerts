@@ -9,6 +9,7 @@ class Image:
     image_url: str
 
 
+@dataclass_json
 @dataclass(frozen=True)
 class Price:
     value: str
@@ -27,11 +28,8 @@ class ItemSummary:
 
 @dataclass_json
 @dataclass(frozen=True)
-class AlertEventPayload:
-    id: int
-    email: str = field(default="")
-    keywords: str = field(default="")
-    frequency: int = field(default="2")
+class Items:
+    itemSummaries: list[ItemSummary] = field(default_factory=list)
 
 
 @dataclass_json
@@ -41,4 +39,13 @@ class NewProductsEventPayload:
     email: str
     keywords: str
     frequency: int
-    items: list[ItemSummary] = field(default_factory=list)
+    items: Items = field(default_factory=dict)
+
+
+@dataclass_json
+@dataclass(frozen=True)
+class AlertEventPayload:
+    id: int
+    email: str = field(default="")
+    keywords: str = field(default="")
+    frequency: int = field(default="2")

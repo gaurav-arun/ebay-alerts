@@ -8,7 +8,7 @@ from django.db import transaction
 
 from pubsub import PubSubEventType
 
-from .datatypes import AlertEventPayload, ItemSummary, NewProductsEventPayload
+from .datatypes import AlertEventPayload, ItemSummary
 from .insights import generate_insights
 from .models import ActiveAlert, ConsumedPubSubEvent, ProductPriceLog
 from .utils import mails
@@ -25,27 +25,33 @@ def _process_new_products_event_type(event: ConsumedPubSubEvent) -> None:
 
     :param event: ConsumedPubSubEvent
     """
-    payload: NewProductsEventPayload = NewProductsEventPayload.from_dict(event.payload)
+
+    # TODO: Use dataclass for validating the payload structure and for dotted access
+    # Currently, it is safe to assume the structure of item in item_summaries list based
+    # on the `Response Field` documentation here:
+    # https://developer.ebay.com/api-docs/buy/browse/resources/item_summary/methods/search#uri.filter
+
+    payload: dict = event.payload
     alert, _ = ActiveAlert.objects.get_or_create(
-        uid=payload.id,
+        uid=payload["id"],
         defaults={
-            "email": payload.email,
-            "keywords": payload.keywords,
-            "frequency": payload.frequency,
+            "email": payload["email"],
+            "keywords": payload["keywords"],
+            "frequency": payload["frequency"],
         },
     )
 
     # Create Product objects from event payload
     products: list[ProductPriceLog] = []
-    items: list[ItemSummary] = payload.items
-    for item in items:
+    item_summaries: list[ItemSummary] = payload["items"].get("itemSummaries", [])
+    for item in item_summaries:
         product = ProductPriceLog.objects.create(
-            item_id=item.item_id,
-            title=item.title,
-            image_url=item.image.image_url,
-            price=item.price.value,
-            currency=item.price.currency,
-            web_url=item.item_id,
+            item_id=item["itemId"],
+            title=item["title"],
+            image_url=item["image"]["imageUrl"],
+            price=item["price"]["value"],
+            currency=item["price"]["currency"],
+            web_url=item["itemWebUrl"],
             timestamp=event.timestamp,
         )
         products.append(product)
