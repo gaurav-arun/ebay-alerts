@@ -7,10 +7,9 @@ services:
       context: .
       dockerfile: alerts_backend/dockerfiles/server.dockerfile
     container_name: alerts_backend
-    env_file:
-    - alerts_backend/.env.docker
     environment:
-    - DJANGO_SETTINGS_MODULE=alerts_backend.settings_docker
+    - DOTENV_FILE=.env.docker
+    - DJANGO_SETTINGS_MODULE=alerts_backend.settings.docker
     ports:
     - 8000:8000
     depends_on:
@@ -21,10 +20,9 @@ services:
       context: .
       dockerfile: alerts_backend/dockerfiles/celery.dockerfile
     container_name: alerts_celery
-    env_file:
-    - alerts_backend/.env.docker
     environment:
-    - DJANGO_SETTINGS_MODULE=alerts_backend.settings_docker
+    - DOTENV_FILE=.env.docker
+    - DJANGO_SETTINGS_MODULE=alerts_backend.settings.docker
     - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
     - EBAY_API_ENV=mock
 
@@ -72,10 +70,9 @@ services:
       context: .
       dockerfile: analytics/dockerfiles/celery.dockerfile
     container_name: analytics_celery
-    env_file:
-    - analytics/.env.docker
     environment:
-    - DJANGO_SETTINGS_MODULE=analytics.settings_docker
+    - DOTENV_FILE=.env.docker
+    - DJANGO_SETTINGS_MODULE=analytics.settings.docker
     - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
     depends_on:
     - analytics_redis
@@ -104,6 +101,7 @@ services:
       dockerfile: ebay_mock/dockerfiles/server.dockerfile
     container_name: ebay-mock
     environment:
-    - DJANGO_SETTINGS_MODULE=ebay_mock.settings
+    - DOTENV_FILE=.env.docker
+    - DJANGO_SETTINGS_MODULE=ebay_mock.settings.docker
     depends_on:
     - alerts_celery
