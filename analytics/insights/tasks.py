@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 
 from celery import shared_task
+from django.conf import settings
 from django.db import transaction
 
 from pubsub import PubSubEventType
@@ -114,7 +115,7 @@ def _process_alert_deleted_event_type(event: ConsumedPubSubEvent):
     alert.save(update_fields=["is_active", "updated_at"])
 
 
-@shared_task
+@shared_task(queue=settings.CELERY_DEFAULT_QUEUE)
 @transaction.atomic
 def process(id: int):
     """
@@ -147,7 +148,7 @@ def process(id: int):
     logger.info(f"Processing complete for ConsumedPubSubEvent: {event}")
 
 
-@shared_task
+@shared_task(queue=settings.CELERY_DEFAULT_QUEUE)
 def send_product_insights(lookback_days: int = 14):
     """
     Send product insights to the users with active alerts
