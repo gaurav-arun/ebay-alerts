@@ -1,9 +1,7 @@
 import os  # isort:skip
 import logging  # isort:skip
 
-os.environ.setdefault(
-    "DJANGO_SETTINGS_MODULE", "analytics.settings_docker"
-)  # isort:skip
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "analytics.settings.base")  # isort:skip
 
 import celery  # noqa: E402
 from celery.schedules import crontab  # noqa: E402
