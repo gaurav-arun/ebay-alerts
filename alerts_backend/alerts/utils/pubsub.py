@@ -7,12 +7,15 @@ from pubsub import PubSubEvent, PubSubEventType, RedisProducer
 logger = logging.getLogger(__name__)
 
 
-def publish_event(event_type: PubSubEventType, payload: dict) -> None:
+def publish_event(
+    event_type: PubSubEventType, payload: dict, fail_silently=True
+) -> None:
     """
     Publishes an event to the pubsub channel
 
     :param event_type: PubSubEventType
     :param payload: A dictionary containing the payload for the event
+    :param fail_silently: If True, exceptions will be suppressed
     """
     try:
         producer = RedisProducer(
@@ -29,3 +32,5 @@ def publish_event(event_type: PubSubEventType, payload: dict) -> None:
         )
     except Exception as e:
         logger.error(f"Error publishing event: {e}")
+        if not fail_silently:
+            raise e
