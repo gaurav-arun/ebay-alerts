@@ -2,7 +2,7 @@ import os  # isort:skip
 import logging  # isort:skip
 
 os.environ.setdefault(
-    "DJANGO_SETTINGS_MODULE", "alerts_backend.settings_docker"
+    "DJANGO_SETTINGS_MODULE", "alerts_backend.settings.base"
 )  # isort:skip
 
 import celery  # noqa: E402
