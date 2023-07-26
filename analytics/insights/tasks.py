@@ -3,10 +3,12 @@ from __future__ import annotations
 import logging
 
 from celery import shared_task
+from django.conf import settings
 from django.db import transaction
 
 from pubsub import PubSubEventType
 
+from .datatypes import AlertEventPayload, ItemSummary, NewProductsEventPayload
 from .insights import generate_insights
 from .models import ActiveAlert, ConsumedPubSubEvent, ProductPriceLog
 from .utils import mails
@@ -23,25 +25,27 @@ def _process_new_products_event_type(event: ConsumedPubSubEvent) -> None:
 
     :param event: ConsumedPubSubEvent
     """
+    payload: NewProductsEventPayload = NewProductsEventPayload.from_dict(event.payload)
     alert, _ = ActiveAlert.objects.get_or_create(
-        uid=event.payload["id"],
+        uid=payload.id,
         defaults={
-            "email": event.payload["email"],
-            "keywords": event.payload["keywords"],
-            "frequency": event.payload["frequency"],
+            "email": payload.email,
+            "keywords": payload.keywords,
+            "frequency": payload.frequency,
         },
     )
 
     # Create Product objects from event payload
     products: list[ProductPriceLog] = []
-    for item in event.payload["items"]["itemSummaries"]:
+    items: list[ItemSummary] = payload.items
+    for item in items:
         product = ProductPriceLog.objects.create(
-            item_id=item["itemId"],
-            title=item["title"],
-            image_url=item["image"]["imageUrl"],
-            price=item["price"]["value"],
-            currency=item["price"]["currency"],
-            web_url=item["itemWebUrl"],
+            item_id=item.item_id,
+            title=item.title,
+            image_url=item.image.image_url,
+            price=item.price.value,
+            currency=item.price.currency,
+            web_url=item.item_id,
             timestamp=event.timestamp,
         )
         products.append(product)
@@ -64,12 +68,13 @@ def _process_alert_created_event_type(event: ConsumedPubSubEvent) -> None:
 
     :param event: ConsumedPubSubEvent
     """
+    payload: AlertEventPayload = AlertEventPayload.from_dict(event.payload)
     ActiveAlert.objects.get_or_create(
-        uid=event.payload["id"],
+        uid=payload.id,
         defaults={
-            "email": event.payload["email"],
-            "keywords": event.payload["keywords"],
-            "frequency": event.payload["frequency"],
+            "email": payload.email,
+            "keywords": payload.keywords,
+            "frequency": payload.frequency,
         },
     )
 
@@ -85,16 +90,17 @@ def _process_alert_updated_event_type(event: ConsumedPubSubEvent):
     correct email address.
 
     NOTE: We are creating a new ActiveAlert object if it doesn't exist in the
-    DB because it is possible that on or more events reach the consumer before the
+    DB because it is possible that one or more events reach the consumer before the
     `PubSubEventType.ALERT_CREATED` event. So we need to create a new ActiveAlert
     object in such case.
     """
+    payload: AlertEventPayload = AlertEventPayload.from_dict(event.payload)
     ActiveAlert.objects.update_or_create(
-        uid=event.payload["id"],
+        uid=payload.id,
         defaults={
-            "email": event.payload["email"],
-            "frequency": event.payload["frequency"],
-            "keywords": event.payload["keywords"],
+            "email": payload.email,
+            "keywords": payload.keywords,
+            "frequency": payload.frequency,
         },
     )
 
@@ -109,12 +115,13 @@ def _process_alert_deleted_event_type(event: ConsumedPubSubEvent):
     ProductPriceLog objects from the DB. We keep them around for future
     reference and analysis.
     """
-    alert = ActiveAlert.objects.get(uid=event.payload["id"])
+    payload: AlertEventPayload = AlertEventPayload.from_dict(event.payload)
+    alert = ActiveAlert.objects.get(uid=payload.id)
     alert.is_active = False
     alert.save(update_fields=["is_active", "updated_at"])
 
 
-@shared_task
+@shared_task(queue=settings.CELERY_DEFAULT_QUEUE)
 @transaction.atomic
 def process(id: int):
     """
@@ -147,7 +154,7 @@ def process(id: int):
     logger.info(f"Processing complete for ConsumedPubSubEvent: {event}")
 
 
-@shared_task
+@shared_task(queue=settings.CELERY_DEFAULT_QUEUE)
 def send_product_insights(lookback_days: int = 14):
     """
     Send product insights to the users with active alerts

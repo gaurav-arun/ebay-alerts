@@ -7,3 +7,4 @@ venv
 **/celerybeat-schedule
 **/alerts_backend/celerybeat-schedule.db
 /analytics/schema.yml
+/venv_poetry/
