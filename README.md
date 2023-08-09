@@ -2,26 +2,6 @@
 
 A fully dockerized full-stack web application that enables a user to configure alerts for specific search phrases on eBay. The application then sends periodic updates with related products to the user via email. Additionally, the user receives periodic emails with insights about the variation in prices of the products in the last 2 weeks.
 
-## Features
-
-| Phase 1                                                                            | Status |
-| ---------------------------------------------------------------------------------- | ------ |
-| Create all CRUD operations                                                         | ✔️     |
-| Add a simple UI (preferred in ReactJs) to create new alerts                        | ✔️     |
-| The solution should work locally using: docker-compose up                          | ✔️     |
-| Expose the documentation of the API with swagger                                   | ✔️     |
-| Provide a short explanation for your architecture and design decisions             | ✔️     |
-| Provide documentation about the project setup, run tests, and run the solution locally | ✔️     |
-| Add tests whenever possible                                                        | ✖️     |
-
-| Phase 2                                                            | Status |
-| ------------------------------------------------------------------ | ------ |
-| Collect data about user alerts and product prices                  | ✔️     |
-| Generate useful product insights                                   | ✔️     |
-| Send periodic emails to the user with product insights             | ✔️     |
-| Create a shared resource for the Phase 1 and Phase 2 applications to communicate | ✔️     |
-| Add tests whenever possible.                                       | ✖️     |
-
 ## Prerequisites
 
 - [Docker and Docker compose](https://docs.docker.com/desktop/)
